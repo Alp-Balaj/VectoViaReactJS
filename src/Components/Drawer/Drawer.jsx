@@ -46,7 +46,6 @@ export default function TemporaryDrawer() {
 
   const DrawerList = (
     <Box sx={{ width: 250, backgroundColor: '#000', height:'100vh' }} role="presentation" onClick={toggleDrawer(false)}>
-      {/* <h1 style={{color: '#FFC800', textAlign: 'center'}}>VectoVia</h1> */}
       <SideNav>
         <ul>
           <li><Link to="/">Home</Link></li>
@@ -63,7 +62,7 @@ export default function TemporaryDrawer() {
 
   return (
     <div>
-      <Button style={{color: '#FFC800', marginLeft:'0px'}} onClick={toggleDrawer(true)}><img style={{height: '50px', borderRadius:'15px 0px 0px 15px'}} src={siteLogo} /></Button>
+      <Button style={{marginLeft:'0px', padding:'0px', width:'100%'}} onClick={toggleDrawer(true)}><img style={{height: '50px', borderRadius:'15px 0px 0px 15px'}} src={siteLogo} /></Button>
       <Drawer style={{backgroundColor: '#000000b9'}} open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>
