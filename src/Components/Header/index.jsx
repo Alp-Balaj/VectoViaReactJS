@@ -10,7 +10,7 @@ const Head = styled.div`
     height: 75px;
     width: 100%;
     background-color: #00000083;
-    transition: background-color 0.4s ease-in-out;
+    transition: background-color 0.6s ease-in;
     &.scrolled {
         background-color: transparent;
     }
@@ -24,7 +24,7 @@ const HeaderComps = styled.div`
     width: 100%;
     background-color: transparent;
     height: 75px;
-    transition: background-color 0.6s ease-in;
+    transition: background-color 0.6s ease-in-out;
     font-size: 20px;
     &.scrolled{
         margin-top: 10px;
