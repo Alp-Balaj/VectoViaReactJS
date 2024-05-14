@@ -11321,3 +11321,17 @@ section#contact form#contactForm :-ms-input-placeholder {
   display: flex;
   justify-content: space-around;
 }
+
+.grayedOut{
+  filter: grayscale(100%);
+  transition: filter 0.3s ease-in-out;
+}
+
+.grayedOut:hover{
+  filter: grayscale(0%);
+}
+
+.instagramFix{
+  width: 100%;
+  height: 100%;
+}
