@@ -13,13 +13,9 @@ const TeamMember = styled.div`
     justify-content: center;
 `;
 
-const Team = styled.div`
-    width:100%;
-`;
-
 const OurTeam = () => {
   return (
-    <Team>
+    <div>
         <section className="page-section bg-light" id="team">
             <div className="container">
                 <div className="text-center">
@@ -78,7 +74,7 @@ const OurTeam = () => {
                 </div>    
             </div>  
         </section>
-    </Team>
+    </div>
   )
 }
 

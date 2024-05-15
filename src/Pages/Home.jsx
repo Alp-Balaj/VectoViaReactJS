@@ -6,11 +6,13 @@ import OurTeam from '../Components/HomeComponents/OurTeam';
 import MyFooter from '../Components/Footer/index';
 import Sponsors from '../Components/HomeComponents/Sponsors';
 import Contact from '../Components/HomeComponents/Contact';
+import Header from '../Components/Header';
 
 
 const Home = () => {
     return (
   <div>
+    <Header/>
     <Hero/>
     <OurServices/>
     <MiniAbout/>
