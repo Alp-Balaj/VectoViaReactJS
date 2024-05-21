@@ -7,6 +7,7 @@ import { Container } from '@mui/material';
 
 const Head = styled.div`
     position: fixed;
+    z-index: 10;
     height: 75px;
     width: 100%;
     background-color: #00000083;
