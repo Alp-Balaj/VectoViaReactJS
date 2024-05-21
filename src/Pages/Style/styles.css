@@ -10937,7 +10937,7 @@ header.masthead {
   color: #fff;
   background-image: url("../../Assets/Images/TaxiBackground.jpg");
   background-repeat: no-repeat;
-  background-attachment: scroll;
+  background-attachment: fixed;
   background-position: center center;
   background-size: cover;
 }
