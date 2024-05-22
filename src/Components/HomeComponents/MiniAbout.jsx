@@ -1,12 +1,13 @@
 import { Grid } from '@mui/material'
 import styled from 'styled-components';
-import React from 'react';
+import React, { useState } from 'react';
 import headphones from '../../Assets/logos/headphones.png';
 import laptop from '../../Assets/logos/laptop.png';
 import leaves from '../../Assets/logos/leaves.png';
 import easy from '../../Assets/logos/easy-to-use.png';
 import free from '../../Assets/logos/free.png';
 import shield from '../../Assets/logos/shield.png';
+
 
 const Card = styled.div`
     display: flex;
@@ -34,8 +35,8 @@ const Item = styled.div`
     justify-content: space-around;
     img{
         margin-top: 20px;
-        width: 25%;
-        height: 30%;
+        width: 40%;
+        height: 40%;
     }
 `;
 
@@ -45,7 +46,7 @@ const TextPart = styled.div`
     flex-direction: column;
     justify-content: start;
     width: 100%;
-    padding: 10px 15px;
+    padding: 0px 15px;
     text-align: center;
 
     h6{
@@ -55,7 +56,35 @@ const TextPart = styled.div`
     }
 `;
 
+
+const Button = styled.button`
+    background-color: #FFC800;
+    color: #FFFFFF;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #E6B700;
+    }
+`;
+
+
+
+
+
+
 const MiniAbout = () => {
+
+const [showMore, setShowMore] = useState(false);
+
+const handleShowMore = () => {
+    setShowMore(!showMore);
+  };
+
   return (
     <div>
         <section className="page-section" id="miniAbout">
@@ -64,9 +93,7 @@ const MiniAbout = () => {
                     <h1 className="section-heading text-uppercase">Why choose us</h1>
                     <h3 className="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
                     <Grid container spacing={2}>
-                      {/* <Grid item xs={12} md={1}></Grid> */}
-
-                      <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={4}>
                         <Card>
                             <Item>
                                 <img src={headphones} alt="fuck" />
@@ -100,8 +127,9 @@ const MiniAbout = () => {
                         </Card>
                       </Grid>
                       {/* <Grid item xs={12} md={1}></Grid> */}
-
-                      <Grid item xs={12} md={4}>
+                      {showMore ? (
+                        <>
+                          <Grid item xs={12} md={4}>
                         <Card>
                             <Item>
                                 <img src={leaves} alt="fuck" />
@@ -112,7 +140,7 @@ const MiniAbout = () => {
                             </Item>
                         </Card>
                       </Grid>
-                      <Grid item xs={12} md={4}>
+                          <Grid item xs={12} md={4}>
                         <Card>
                             <Item>
                                 <img src={free} alt="fuck" />
@@ -123,7 +151,7 @@ const MiniAbout = () => {
                             </Item>
                         </Card>
                       </Grid>
-                      <Grid item xs={12} md={4}>
+                          <Grid item xs={12} md={4}>
                         <Card>
                             <Item>
                                 <img src={shield} alt="fuck" />
@@ -134,6 +162,19 @@ const MiniAbout = () => {
                             </Item>
                         </Card>
                       </Grid>
+                        </>
+                      ) : null}
+                      <Grid item xs={12}>
+                        <Button onClick={handleShowMore}>
+                          {showMore ? 'Show Less' : 'Show More'}
+                        </Button>
+                      </Grid>
+                      
+                      {/* <Grid item xs={12} md={1}></Grid> */}
+
+                      
+                      
+                      
                     </Grid>
                 </div>
             </div>
