@@ -153,6 +153,7 @@ const UserTable = () => {
                                 <th>Last Name</th>
                                 <th>Username</th>
                                 <th>Email</th>
+                                <th>Password</th>
                                 <th>Role</th>
                                 <th>Actions</th>
                             </tr>
@@ -165,6 +166,7 @@ const UserTable = () => {
                                     <td>{user.mbiemri}</td>
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
+                                    <td>{user.password}</td>
                                     <td>{user.role}</td>
                                     <td>
                                         <button onClick={() => handleUpdateClick(user)}>Update</button>
