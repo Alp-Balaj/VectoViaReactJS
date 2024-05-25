@@ -128,7 +128,15 @@ const Header = () => {
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/taxi">Order Taxi</Link></li>
                         <li><Link to="/rent">Rent Car</Link></li>
-                        <li><Button onClick={handleOpen}>LOG-IN</Button></li>
+                        {localStorage.getItem("token") ? (
+                            <li><Button onClick={() => {
+                                localStorage.removeItem("token");
+                                localStorage.removeItem("userInfo");
+                                window.location.reload();
+                            }}>LOG-OUT</Button></li>
+                        ) : (
+                            <li><Button onClick={handleOpen}>LOG-IN</Button></li>
+                        )}
                     </ul>
                 </HeaderComps>
             </Container>

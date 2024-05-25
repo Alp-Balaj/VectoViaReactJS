@@ -53,7 +53,7 @@ const SignUp = ({ goToLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "http://localhost:5108/api/User/register";
+    const url = "https://localhost:7081/api/User/register";
     try {
       const response = await axios.post(url, formData);
       if (response.data.message) {
