@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 import Drawer from '../Drawer/Drawer';
 import {React, useState, useEffect } from 'react';
 import "../../Pages/Style/styles.css";
-import { Container, Modal, Box, Button, Typography } from '@mui/material';
+import { Container, Modal, Box, Button } from '@mui/material';
+import Login from './Login';
+import { AppStateProvider } from '../Context/AppStateProvider';
+import SignUp from './SignUp';
 
 const Head = styled.div`
     position: fixed;
@@ -62,8 +65,10 @@ const HeaderComps = styled.div`
             button:hover{
                 background-color: #d9aa00;
             }
+            
         }
-    }  
+    }
+     
 `;
 
 const style = {
@@ -75,12 +80,19 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    p: 4,  
 };
+
+const switcher = {
+    cursor: 'pointer',
+    color: '#ffc800',
+}
 
 const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [open, setOpen] = useState(false);
+    const [showLogin, setShowLogin] = useState(true);
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -99,6 +111,14 @@ const Header = () => {
         };
     }, []);
 
+    const toggleLogin = () => {
+        setShowLogin(true);
+    };
+
+    const toggleSignUp = () => {
+        setShowLogin(false);
+    };
+
     return (
         <Head className={scrolled ? 'scrolled' : ''}>
             <Container>
@@ -108,7 +128,15 @@ const Header = () => {
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/taxi">Order Taxi</Link></li>
                         <li><Link to="/rent">Rent Car</Link></li>
-                        <li><Button onClick={handleOpen}>LOG-IN</Button></li>
+                        {localStorage.getItem("token") ? (
+                            <li><Button onClick={() => {
+                                localStorage.removeItem("token");
+                                localStorage.removeItem("userInfo");
+                                window.location.reload();
+                            }}>LOG-OUT</Button></li>
+                        ) : (
+                            <li><Button onClick={handleOpen}>LOG-IN</Button></li>
+                        )}
                     </ul>
                 </HeaderComps>
             </Container>
@@ -119,12 +147,19 @@ const Header = () => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Login or Sign Up
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Insert login form here.
-                    </Typography>
+                <AppStateProvider>
+                    {showLogin ? (
+                        <>
+                            <Login />
+                            <p>Don't have an account? <a style={switcher} onClick={toggleSignUp}>Register</a></p>
+                        </>
+                    ) : (
+                        <>
+                            <SignUp />
+                            <p>Already have an account? <a style={switcher} onClick={toggleLogin}>Login</a></p>
+                        </>
+                    )}
+                </AppStateProvider>
                 </Box>
             </Modal>
         </Head>

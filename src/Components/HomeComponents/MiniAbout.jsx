@@ -7,7 +7,7 @@ import leaves from '../../Assets/logos/leaves.png';
 import easy from '../../Assets/logos/easy-to-use.png';
 import free from '../../Assets/logos/free.png';
 import shield from '../../Assets/logos/shield.png';
-
+import Container from '@mui/material/Container';
 
 const Card = styled.div`
     display: flex;
@@ -16,8 +16,8 @@ const Card = styled.div`
 `
 
 const Item = styled.div`
-    height: 450px;
-    width: 80%;
+    height: 275px;
+    width: 95%;
     padding: 25px 10px;
     border: 1px solid #000;
     border-radius: 15px;
@@ -73,10 +73,6 @@ const Button = styled.button`
 `;
 
 
-
-
-
-
 const MiniAbout = () => {
 
 const [showMore, setShowMore] = useState(false);
@@ -92,7 +88,9 @@ const handleShowMore = () => {
                 <div className="text-center">
                     <h1 className="section-heading text-uppercase">Why choose us</h1>
                     <h3 className="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
-                    <Grid container spacing={2}>
+                    <Container maxWidth="md">
+                        <Grid container spacing={2}>
+                        
                     <Grid item xs={12} md={4}>
                         <Card>
                             <Item>
@@ -175,7 +173,8 @@ const handleShowMore = () => {
                       
                       
                       
-                    </Grid>
+                        </Grid>
+                    </Container>
                 </div>
             </div>
         </section>
