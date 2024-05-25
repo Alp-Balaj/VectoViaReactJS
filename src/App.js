@@ -9,6 +9,7 @@ import Dashboard from './Pages/Dashboard';
 import ErrorPage from './Pages/ErrorPage';
 import PrivateRoute from './Components/PrivateRoute';
 import NotAdmin from './Pages/NotAdmin.jsx';
+import PickUpLocation from './Components/DashboardComponents/PickUpLocation.jsx';
 
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
           <Route path='/dashboard' element={<PrivateRoute><Dashboard/></PrivateRoute>} />
           <Route path='*' element={<ErrorPage/>} />
           <Route path='/notAdmin' element={<NotAdmin />} />
+          <Route path='/dashboard/pick-up-location' element={<PrivateRoute><PickUpLocation/></PrivateRoute>} />
         </Routes>
     </Router>
   )

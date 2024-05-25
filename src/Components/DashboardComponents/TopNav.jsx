@@ -3,30 +3,37 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Top = styled.div`
-    width:80vw;
+    width: 80vw;
     height: 90px;
-    background-color: #000;
+    background-color: #2c3036;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    border-bottom: 3px solid yellow;
-    h3{
-        color: yellow;
+    padding: 0 20px;
+    border-bottom: 3px solid #ffc107;
+    h3 {
+        color: #ffc107;
     }
-    a{
+    a {
         text-decoration: none;
-
+        color: #ffc107;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        &:hover {
+            background-color: #ffc107;
+            color: #495057;
+        }
     }
 `;
 
-
 const TopNav = () => {
-  return (
-    <Top>
-        <h3>Welcome Admin!</h3>
-        <Link to="/">Home</Link>
-    </Top>
-  )
-}
+    return (
+        <Top>
+            <h3>Take Command!</h3>
+            <Link to="/">Home</Link>
+        </Top>
+    );
+};
 
-export default TopNav
+export default TopNav;
