@@ -83,6 +83,7 @@ const Window = styled.div`
 
 const UserTable = () => {
     const [users, setUsers] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [error, setError] = useState(null);
     const [showTable, setShowTable] = useState(false);
     const [showForm, setShowForm] = useState(false);
@@ -96,18 +97,32 @@ const UserTable = () => {
     });
     const [isUpdating, setIsUpdating] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
-    const handleUpdateClick = (user) => {
+    
+    
+    const handleUpdateClick = async (user) => {
         setIsUpdating(true);
         setCurrentUser(user);
         setShowTable(false);
-        setShowForm(false);
+        setShowForm(false); // Show the form for updating
+        try {
+            const Roleresponse = await axios.get("https://localhost:7081/api/Role/get-role");
+            setRoles(Roleresponse.data);
+            console.log(Roleresponse.data);
+        } catch (error) {
+            console.error('Failed to fetch roles:', error);
+        }
     };
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:5108/api/User/get-users");
-                setUsers(response.data);
+                const response = await axios.get("https://localhost:7081/api/User/get-users");
+                const usersWithRoles = await Promise.all(response.data.map(async user => {
+                    const roleResponse = await axios.get(`https://localhost:7081/api/Role/get-role-id/${user.roleID}`);
+                    return { ...user, roleName: roleResponse.data.llojiIRolit.toString() };
+                }));
+                setUsers(usersWithRoles);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setError(error.message || 'Error fetching data');
@@ -119,6 +134,7 @@ const UserTable = () => {
         }
     }, [showTable]);
 
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
@@ -129,7 +145,7 @@ const UserTable = () => {
 
     const deleteUser = async (userID) => {
         try {
-            await axios.delete(`http://localhost:5108/api/User/delete-user-by-id/${userID}`);
+            await axios.delete(`https://localhost:7081/api/User/delete-user-by-id/${userID}`);
             setUsers(users.filter(user => user.id !== userID));
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -140,9 +156,9 @@ const UserTable = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5108/api/User/add-user", formData);
+            await axios.post("https://localhost:7081/api/User/add-user", formData);
             // Fetch users again after adding a new user
-            const response = await axios.get("http://localhost:5108/api/User/get-users");
+            const response = await axios.get("https://localhost:7081/api/User/get-users");
             setUsers(response.data);
             // Clear form data after successful submission
             setFormData({
@@ -153,6 +169,8 @@ const UserTable = () => {
                 password: '',
                 role: ''
             });
+            setShowForm(false);
+            setShowTable(true);
         } catch (error) {
             console.error('Error adding user:', error);
             setError(error.message || 'Error adding user');
@@ -162,7 +180,7 @@ const UserTable = () => {
     const handleUpdateUser = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:5108/api/User/update-user-by-id/${currentUser.id}`, currentUser);
+            await axios.put(`https://localhost:7081/api/User/update-user-by-id/${currentUser.id}`, currentUser);
             const updatedUsers = users.map(user => user.id === currentUser.id ? currentUser : user);
             setUsers(updatedUsers);
             setIsUpdating(false);
@@ -177,7 +195,7 @@ const UserTable = () => {
         const { name, value } = e.target;
         setCurrentUser(prev => ({
             ...prev,
-            [name]: value
+            [name]: name === "roleID" ? parseInt(value, 10) : value
         }));
     };
 
@@ -185,13 +203,23 @@ const UserTable = () => {
         setShowTable(!showTable);
         setIsUpdating(false);
         setShowForm(false); // Hide the form when showing the table
+        
     };
 
-    const toggleForm = () => {
-        setShowForm(!showForm);
-        setIsUpdating(false);
-        setShowTable(false); // Hide the table when showing the form
-    };
+    const toggleForm = async () => {
+    setShowTable(false); // Hide the table when showing the form
+    setShowForm(!showForm);
+    setIsUpdating(false);
+    if (!showForm) { // Fetch roles only if the form is about to be shown
+        try {
+            const Roleresponse = await axios.get("https://localhost:7081/api/Role/get-role");
+            setRoles(Roleresponse.data);
+            console.log(Roleresponse.data);
+        } catch (error) {
+            console.error('Failed to fetch roles:', error);
+        }
+    }
+};
     return (
         <Root>
             <Buttons>
@@ -224,7 +252,7 @@ const UserTable = () => {
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
                                     <td>{user.password}</td>
-                                    <td>{user.roleID    }</td>
+                                    <td>{user.roleName}</td>
                                     <td>
                                         <Button onClick={() => handleUpdateClick(user)}>Update</Button>
                                         <Button onClick={() => deleteUser(user.id)}>Delete</Button>
@@ -262,7 +290,13 @@ const UserTable = () => {
                         </label>
                         <label>
                             Role:
-                            <input type="text" name="role" value={currentUser.roleID} onChange={handleUpdateChange} />
+                            <select name="roleID" value={currentUser.roleID} onChange={handleUpdateChange}>
+                                {roles.map(role => (
+                                    <option key={role.id} value={role.id}>
+                                        {role.llojiIRolit}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
                         <Button type="submit">Update User</Button>
                     </form>
@@ -295,7 +329,13 @@ const UserTable = () => {
                         </label>
                         <label>
                             Role:
-                            <input type="text" name="role" value={formData.roleID} onChange={handleChange} />
+                            <select name="roleID" value={currentUser.roleID} onChange={handleUpdateChange}>
+                                {roles.map(role => (
+                                    <option key={role.id} value={role.id}>
+                                        {role.llojiIRolit}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
                         <Button type="submit">Add User</Button>
                     </form>
