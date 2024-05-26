@@ -107,7 +107,11 @@ const UserTable = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get("https://localhost:7081/api/User/get-users");
-                setUsers(response.data);
+                const usersWithRoles = await Promise.all(response.data.map(async user => {
+                    const roleResponse = await axios.get(`https://localhost:7081/api/Role/get-role-id/${user.roleID}`);
+                    return { ...user, roleName: roleResponse.data.llojiIRolit.toString() };
+                }));
+                setUsers(usersWithRoles);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setError(error.message || 'Error fetching data');
@@ -177,7 +181,7 @@ const UserTable = () => {
         const { name, value } = e.target;
         setCurrentUser(prev => ({
             ...prev,
-            [name]: value
+            [name]: name === "roleID" ? parseInt(value, 10) : value
         }));
     };
 
@@ -224,7 +228,7 @@ const UserTable = () => {
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
                                     <td>{user.password}</td>
-                                    <td>{user.roleID    }</td>
+                                    <td>{user.roleName}</td>
                                     <td>
                                         <Button onClick={() => handleUpdateClick(user)}>Update</Button>
                                         <Button onClick={() => deleteUser(user.id)}>Delete</Button>
@@ -262,7 +266,7 @@ const UserTable = () => {
                         </label>
                         <label>
                             Role:
-                            <input type="text" name="role" value={currentUser.roleID} onChange={handleUpdateChange} />
+                            <input type="number" name="roleID" value={currentUser.roleID} onChange={handleUpdateChange} />
                         </label>
                         <Button type="submit">Update User</Button>
                     </form>
@@ -295,7 +299,7 @@ const UserTable = () => {
                         </label>
                         <label>
                             Role:
-                            <input type="text" name="role" value={formData.roleID} onChange={handleChange} />
+                            <input type="number" name="roleID" value={formData.roleID} onChange={handleChange} />
                         </label>
                         <Button type="submit">Add User</Button>
                     </form>
