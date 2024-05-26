@@ -3,29 +3,76 @@ import axios from 'axios';
 import styled from 'styled-components';
 
 const Root = styled.div`
-    border-left: 3px solid yellow;
-    background-color: black;
-    color: white;
-    height: calc( 100vh - 90px);
+    background-color: white;
+    height: 100%;
+    overflow-y: auto;
 `;
 
 const AddUsers = styled.div`
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: white;
-    form{
+    color: #343a40;
+    form {
         display: flex;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
         width: 300px;
-        label{
+        label {
             display: flex;
             flex-direction: column;
+            margin-bottom: 10px;
         }
-        button{
+        button {
             margin-top: 20px;
         }
+    }
+`;
+
+const Button = styled.button`
+    background-color: #2c3036;
+    color: #ffc107;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    &:hover {
+        background-color: #ffc107;
+        color: #343a40;
+    }
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const Buttons = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const FancyTable = styled.table`
+    overflow-y: auto;
+    margin: auto;
+    border-collapse: collapse;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    th{
+        background-color: #2c3036;
+        text-align: center; 
+        color: #ffc107; 
+        padding: 15px;
+        td{
+            color: black;
+            padding: 15px 10px; /* Increased vertical padding and kept horizontal padding */
+            transition: background-color 0.3s; /* Add transition effect */
+        } 
     }
 `;
 
@@ -40,15 +87,18 @@ const RoleTable = () => {
     });
     const [isUpdating, setIsUpdating] = useState(false);
     const [currentRole, setCurrentRole] = useState(null);
+
     const handleUpdateClick = (role) => {
         setIsUpdating(true);
         setCurrentRole(role);
+        setShowForm(false); 
+        setShowTable(false);
     };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("https://localhost:7081/api/Role/get-role");
+                const response = await axios.get("http://localhost:5108/api/Role/get-role");
                 setRoles(response.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -121,27 +171,31 @@ const RoleTable = () => {
 
     const toggleTable = () => {
         setShowTable(!showTable);
+        setIsUpdating(false);
         setShowForm(false); // Hide the form when showing the table
     };
 
     const toggleForm = () => {
         setShowForm(!showForm);
+        setIsUpdating(false);
         setShowTable(false); // Hide the table when showing the form
     };
     return (
         <Root>
-            <button onClick={toggleTable}>{showTable ? 'Hide Roles' : 'Show Roles'}</button>
-            <button onClick={toggleForm}>{showForm ? 'Hide Add Roles' : 'Add Roles'}</button>
-
+            <Buttons>
+                <Button onClick={toggleTable}>{showTable ? 'Hide Roles' : 'Show Roles'}</Button>
+                <Button onClick={toggleForm}>{showForm ? 'Hide Add Roles' : 'Add Roles'}</Button>
+            </Buttons>
             {showTable && (
                 <div>
                     {error && <div>Error: {error}</div>}
-                    <h2>User List</h2>
-                    <table className="w-100">
+                    <h2 style={{textAlign: 'center'}}>Role List</h2>
+                    <FancyTable>
                         <thead>
                             <tr>
                                 <th>RoleID</th>
                                 <th>Lloji i Rolit</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,14 +203,14 @@ const RoleTable = () => {
                                 <tr key={role.id}>
                                     <td>{role.roleID}</td>
                                     <td>{role.llojiIRolit}</td>
-                                    <td>
-                                        <button onClick={() => handleUpdateClick(role)}>Update</button>
-                                        <button onClick={() => deleteRole(role.id)}>Delete</button>
+                                    <td style={{display: 'flex', justifyContent: 'center'}}>
+                                        <Button onClick={() => handleUpdateClick(role)}>Update</Button>
+                                        <Button onClick={() => deleteRole(role.id)}>Delete</Button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
+                    </FancyTable>
                 </div>
             )}
 

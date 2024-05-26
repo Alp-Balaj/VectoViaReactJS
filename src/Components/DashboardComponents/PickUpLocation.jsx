@@ -1,8 +1,6 @@
 import React, { useState, useEffect,useRef  } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import SideNav from './SideNav';
-import TopNav from './TopNav';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
 
@@ -48,6 +46,8 @@ const AddLocation = styled.div`
     form {
         display: flex;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
         width: 300px;
         label {
             display: flex;
@@ -105,6 +105,14 @@ const ConfirmDeletePopup = styled.div`
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 9999;
 `;
+
+
+const Buttons = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
 
 const PickUpLocations = () => {
     const [locations, setLocations] = useState([]);
@@ -235,13 +243,14 @@ const PickUpLocations = () => {
 
     return (
         <Layout>
-        <SideNav />
         <div style={{ width: '80vw' }}>
-            <TopNav />
+            
             <BlurBackground blur={confirmDelete}>
             <MainContent   blur={confirmDelete} className={confirmDelete ? 'blur-background' : ''} >
-                <Button onClick={toggleTable}>{showTable ? 'Hide PickUp Locations' : 'Show PickUp Locations'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Location' : 'Add Location'}</Button>
+                <Buttons>
+                    <Button onClick={toggleTable}>{showTable ? 'Hide PickUp Locations' : 'Show PickUp Locations'}</Button>
+                    <Button onClick={toggleForm}>{showForm ? 'Hide Add Location' : 'Add Location'}</Button>
+                </Buttons>
 
                 {showTable && (
                     <TableContainer>

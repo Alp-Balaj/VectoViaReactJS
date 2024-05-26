@@ -5,12 +5,14 @@ import styled from 'styled-components';
 const Top = styled.div`
     width: 80vw;
     height: 90px;
-    background-color: #2c3036;
+
+    background-color: #F8F9FA;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    border-bottom: 3px solid #ffc107;
+
     h3 {
         color: #ffc107;
     }
