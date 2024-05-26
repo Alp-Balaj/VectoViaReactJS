@@ -98,7 +98,7 @@ const RoleTable = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:5108/api/Role/get-role");
+                const response = await axios.get("https://localhost:7081/api/Role/get-role");
                 setRoles(response.data);
             } catch (error) {
                 console.error('Error fetching data:', error);

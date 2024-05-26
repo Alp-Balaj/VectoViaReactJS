@@ -81,24 +81,23 @@ const Window = styled.div`
     overflow-y: auto;
 `
 
-const UserTable = () => {
-    const [users, setUsers] = useState([]);
+const KompaniaTaxiTable = () => {
+    const [companies, setCompanies] = useState([]);
     const [error, setError] = useState(null);
     const [showTable, setShowTable] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
-        emri: '',
-        mbiemri: '',
-        username: '',
-        email: '',
-        password: '',
-        role: ''
+        Kompania: '',
+        Location: '',
+        ContactInfo: '',
+        Sigurimi: '',
+        QytetiId: ''
     });
     const [isUpdating, setIsUpdating] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null);
-    const handleUpdateClick = (user) => {
+    const [currentCompany, setCurrentCompany] = useState(null);
+    const handleUpdateClick = (company) => {
         setIsUpdating(true);
-        setCurrentUser(user);
+        setCurrentCompany(company);
         setShowTable(false);
         setShowForm(false);
     };
@@ -107,7 +106,7 @@ const UserTable = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get("https://localhost:7081/api/User/get-users");
-                setUsers(response.data);
+                setCompanies(response.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setError(error.message || 'Error fetching data');
@@ -127,10 +126,10 @@ const UserTable = () => {
         }));
     };
 
-    const deleteUser = async (userID) => {
+    const deleteCompanies = async (companyID) => {
         try {
-            await axios.delete(`https://localhost:7081/api/User/delete-user-by-id/${userID}`);
-            setUsers(users.filter(user => user.id !== userID));
+            await axios.delete(`https://localhost:7081/api/User/delete-user-by-id/${companyID}`);
+            setCompanies(companies.filter(company => company.CompanyID !== companyID));
         } catch (error) {
             console.error('Error deleting user:', error);
             setError(error.message || 'Error deleting user');
@@ -143,30 +142,29 @@ const UserTable = () => {
             await axios.post("https://localhost:7081/api/User/add-user", formData);
             // Fetch users again after adding a new user
             const response = await axios.get("https://localhost:7081/api/User/get-users");
-            setUsers(response.data);
+            setCompanies(response.data);
             // Clear form data after successful submission
             setFormData({
-                emri: '',
-                mbiemri: '',
-                username: '',
-                email: '',
-                password: '',
-                role: ''
+                Kompania: '',
+                Location: '',
+                ContactInfo: '',
+                Sigurimi: '',
+                QytetiId: ''
             });
         } catch (error) {
-            console.error('Error adding user:', error);
-            setError(error.message || 'Error adding user');
+            console.error('Error adding company:', error);
+            setError(error.message || 'Error adding company');
         }
     };
 
-    const handleUpdateUser = async (e) => {
+    const handleUpdateCompany = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`https://localhost:7081/api/User/update-user-by-id/${currentUser.id}`, currentUser);
-            const updatedUsers = users.map(user => user.id === currentUser.id ? currentUser : user);
-            setUsers(updatedUsers);
+            await axios.put(`https://localhost:7081/api/User/update-user-by-id/${currentCompany.CompanyID}`, currentCompany);
+            const updatedCompanies = companies.map(company => company.CompanyID === currentCompany.CompanyID ? currentCompany : company);
+            setCompanies(updatedCompanies);
             setIsUpdating(false);
-            setCurrentUser(null);
+            setCurrentCompany(null);
         } catch (error) {
             console.error('Error updating user:', error);
             setError(error.message || 'Error updating user');
@@ -175,7 +173,7 @@ const UserTable = () => {
 
     const handleUpdateChange = (e) => {
         const { name, value } = e.target;
-        setCurrentUser(prev => ({
+        setCurrentCompany(prev => ({
             ...prev,
             [name]: value
         }));
@@ -195,39 +193,37 @@ const UserTable = () => {
     return (
         <Root>
             <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Users' : 'Show Users'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Users' : 'Add Users'}</Button>
+                <Button onClick={toggleTable}>{showTable ? 'Hide Companies' : 'Show Companies'}</Button>
+                <Button onClick={toggleForm}>{showForm ? 'Hide Add Companies' : 'Add Companies'}</Button>
             </Buttons>
             {showTable && (
                 <>
                     {error && <div>Error: {error}</div>}
-                    <h2 style={{textAlign: 'center'}}>User List</h2>
+                    <h2 style={{textAlign: 'center'}}>Kompanite Taxi List</h2>
                     <FancyTable>
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Password</th>
-                                <th>Role</th>
+                                <th>Company ID</th>
+                                <th>Company Name</th>
+                                <th>Location</th>
+                                <th>Contact Info</th>
+                                <th>Insurance</th>
+                                <th>City ID</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map(user => (
-                                <tr key={user.id}>
-                                    <td>{user.id}</td>
-                                    <td>{user.emri}</td>
-                                    <td>{user.mbiemri}</td>
-                                    <td>{user.username}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.password}</td>
-                                    <td>{user.roleID    }</td>
+                            {companies.map(company => (
+                                <tr key={company.CompanyID}>
+                                    <td>{company.CompanyID}</td>
+                                    <td>{company.Kompania}</td>
+                                    <td>{company.Location}</td>
+                                    <td>{company.ContactInfo}</td>
+                                    <td>{company.Sigurimi}</td>
+                                    <td>{company.QytetiId}</td>
                                     <td>
-                                        <Button onClick={() => handleUpdateClick(user)}>Update</Button>
-                                        <Button onClick={() => deleteUser(user.id)}>Delete</Button>
+                                        <Button onClick={() => handleUpdateClick(company)}>Update</Button>
+                                        <Button onClick={() => deleteCompanies(company.CompanyID)}>Delete</Button>
                                     </td>
                                 </tr>
                             ))}
@@ -238,66 +234,58 @@ const UserTable = () => {
 
             {isUpdating && (
                 <AddUsers>
-                    <h2>Update User</h2>
-                    <form onSubmit={handleUpdateUser}>
+                    <h2>Update Company</h2>
+                    <form onSubmit={handleUpdateCompany}>
                         <label>
-                            First Name:
-                            <input type="text" name="emri" value={currentUser.emri} onChange={handleUpdateChange} />
+                            Company Name:
+                            <input type="text" name="Kompania" value={currentCompany.Kompania} onChange={handleUpdateChange} />
                         </label>
                         <label>
-                            Last Name:
-                            <input type="text" name="mbiemri" value={currentUser.mbiemri} onChange={handleUpdateChange} />
+                            Location:
+                            <input type="text" name="Location" value={currentCompany.Location} onChange={handleUpdateChange} />
                         </label>
                         <label>
-                            Username:
-                            <input type="text" name="username" value={currentUser.username} onChange={handleUpdateChange} />
+                            ContactInfo:
+                            <input type="text" name="ContactInfo" value={currentCompany.ContactInfo} onChange={handleUpdateChange} />
                         </label>
                         <label>
-                            Email:
-                            <input type="email" name="email" value={currentUser.email} onChange={handleUpdateChange} />
+                            Sigurimi:
+                            <input type="text" name="Sigurimi" value={currentCompany.Sigurimi} onChange={handleUpdateChange} />
                         </label>
                         <label>
-                            Password:
-                            <input type="password" name="password" value={currentUser.password} onChange={handleUpdateChange} />
+                            QytetiId:
+                            <input type="number" name="QytetiId" value={currentCompany.QytetiId} onChange={handleUpdateChange} />
                         </label>
-                        <label>
-                            Role:
-                            <input type="text" name="role" value={currentUser.roleID} onChange={handleUpdateChange} />
-                        </label>
-                        <Button type="submit">Update User</Button>
+                        <Button type="submit">Update Company</Button>
                     </form>
                 </AddUsers>
             )}
 
             {showForm && (
                 <AddUsers>
-                    <h2>Add New User</h2>
+                    <h2>Add New Company</h2>
                     <form onSubmit={handleSubmit}>
                         <label>
-                            First Name:
-                            <input type="text" name="emri" value={formData.emri} onChange={handleChange} />
+                            Kompania:
+                            <input type="text" name="Kompania" value={formData.Kompania} onChange={handleChange} />
                         </label>
                         <label>
-                            Last Name:
-                            <input type="text" name="mbiemri" value={formData.mbiemri} onChange={handleChange} />
+                            Location:
+                            <input type="text" name="Location" value={formData.Location} onChange={handleChange} />
                         </label>
                         <label>
-                            Username:
-                            <input type="text" name="username" value={formData.username} onChange={handleChange} />
+                            ContactInfo:
+                            <input type="text" name="ContactInfo" value={formData.ContactInfo} onChange={handleChange} />
                         </label>
                         <label>
-                            Email:
-                            <input type="email" name="email" value={formData.email} onChange={handleChange} />
+                            Sigurimi:
+                            <input type="text" name="Sigurimi" value={formData.Sigurimi} onChange={handleChange} />
                         </label>
                         <label>
-                            Password:
-                            <input type="password" name="password" value={formData.password} onChange={handleChange} />
+                            QytetiId:
+                            <input type="number" name="QytetiId" value={formData.QytetiId} onChange={handleChange} />
                         </label>
-                        <label>
-                            Role:
-                            <input type="text" name="role" value={formData.roleID} onChange={handleChange} />
-                        </label>
-                        <Button type="submit">Add User</Button>
+                        <Button type="submit">Add Company</Button>
                     </form>
                 </AddUsers>
             )}
@@ -305,5 +293,5 @@ const UserTable = () => {
     );
 };
 
-export default UserTable;
+export default KompaniaTaxiTable;
 
