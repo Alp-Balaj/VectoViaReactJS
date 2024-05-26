@@ -5,6 +5,7 @@ import UserTable from '../Components/DashboardComponents/UserTable';
 import RoleTable from '../Components/DashboardComponents/RoleTable';
 import PickUpLocation from '../Components/DashboardComponents/PickUpLocation';
 import KompaniaTaxiTable from '../Components/DashboardComponents/KompaniaTaxiTable';
+import KompaniaRent from '../Components/DashboardComponents/KompaniaRent';
 import { useState } from 'react';
 import logo from '../Assets/logos/SiteLogo.jpg';
 
@@ -136,6 +137,11 @@ const Dashboard = () => {
                             <li><a className='underNeath' onClick={() => toggleTable('location')}>
                               {activeTable === 'location' ? 'Hide PickUp Location Table' : 'Show PickUp Location Table'}
                             </a></li>
+                            <li>
+            <a className='underNeath' onClick={() => toggleTable('kompaniaRent')}>
+                {activeTable === 'kompaniaRent' ? 'Hide Kompania Rent Table' : 'Show Kompania Rent Table'}
+            </a>
+        </li>
                         </ul>
                       </Under>
                     )}
@@ -149,7 +155,9 @@ const Dashboard = () => {
                 {activeTable === 'role' && <RoleTable />}
                 {activeTable === 'user' && <UserTable />}
                 {activeTable === 'location' && <PickUpLocation />}
+                {activeTable === 'kompaniaRent' && <KompaniaRent />}
                 {activeTable === 'kompTaxi' && <KompaniaTaxiTable />}
+               
             </Window>
         </div>
     </Dash>
