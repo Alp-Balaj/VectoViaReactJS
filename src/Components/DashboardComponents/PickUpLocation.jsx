@@ -106,11 +106,13 @@ const ConfirmDeletePopup = styled.div`
     z-index: 9999;
 `;
 
+
 const Buttons = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
 `;
+
 
 const PickUpLocations = () => {
     const [locations, setLocations] = useState([]);
