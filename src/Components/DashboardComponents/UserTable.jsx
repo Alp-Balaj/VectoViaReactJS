@@ -83,6 +83,7 @@ const Window = styled.div`
 
 const UserTable = () => {
     const [users, setUsers] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [error, setError] = useState(null);
     const [showTable, setShowTable] = useState(false);
     const [showForm, setShowForm] = useState(false);
@@ -96,12 +97,22 @@ const UserTable = () => {
     });
     const [isUpdating, setIsUpdating] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
-    const handleUpdateClick = (user) => {
+    
+    
+    const handleUpdateClick = async (user) => {
         setIsUpdating(true);
         setCurrentUser(user);
         setShowTable(false);
-        setShowForm(false);
+        setShowForm(false); // Show the form for updating
+        try {
+            const Roleresponse = await axios.get("https://localhost:7081/api/Role/get-role");
+            setRoles(Roleresponse.data);
+            console.log(Roleresponse.data);
+        } catch (error) {
+            console.error('Failed to fetch roles:', error);
+        }
     };
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -122,6 +133,7 @@ const UserTable = () => {
             fetchData();
         }
     }, [showTable]);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -157,6 +169,8 @@ const UserTable = () => {
                 password: '',
                 role: ''
             });
+            setShowForm(false);
+            setShowTable(true);
         } catch (error) {
             console.error('Error adding user:', error);
             setError(error.message || 'Error adding user');
@@ -189,13 +203,23 @@ const UserTable = () => {
         setShowTable(!showTable);
         setIsUpdating(false);
         setShowForm(false); // Hide the form when showing the table
+        
     };
 
-    const toggleForm = () => {
-        setShowForm(!showForm);
-        setIsUpdating(false);
-        setShowTable(false); // Hide the table when showing the form
-    };
+    const toggleForm = async () => {
+    setShowTable(false); // Hide the table when showing the form
+    setShowForm(!showForm);
+    setIsUpdating(false);
+    if (!showForm) { // Fetch roles only if the form is about to be shown
+        try {
+            const Roleresponse = await axios.get("https://localhost:7081/api/Role/get-role");
+            setRoles(Roleresponse.data);
+            console.log(Roleresponse.data);
+        } catch (error) {
+            console.error('Failed to fetch roles:', error);
+        }
+    }
+};
     return (
         <Root>
             <Buttons>
@@ -266,7 +290,13 @@ const UserTable = () => {
                         </label>
                         <label>
                             Role:
-                            <input type="number" name="roleID" value={currentUser.roleID} onChange={handleUpdateChange} />
+                            <select name="roleID" value={currentUser.roleID} onChange={handleUpdateChange}>
+                                {roles.map(role => (
+                                    <option key={role.id} value={role.id}>
+                                        {role.llojiIRolit}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
                         <Button type="submit">Update User</Button>
                     </form>
@@ -299,7 +329,13 @@ const UserTable = () => {
                         </label>
                         <label>
                             Role:
-                            <input type="number" name="roleID" value={formData.roleID} onChange={handleChange} />
+                            <select name="roleID" value={currentUser.roleID} onChange={handleUpdateChange}>
+                                {roles.map(role => (
+                                    <option key={role.id} value={role.id}>
+                                        {role.llojiIRolit}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
                         <Button type="submit">Add User</Button>
                     </form>
