@@ -174,6 +174,7 @@ const Dashboard = () => {
                 {activeTable === 'role' && <RoleTable />}
                 {activeTable === 'user' && <UserTable />}
                 {activeTable === 'location' && <PickUpLocation />}
+                {activeTable === 'kompaniaRent' && <KompaniaRent />}
                 {activeTable === 'kompTaxi' && <KompaniaTaxiTable />}
                 {activeTable === 'qyteti' && <QytetiTable />}
                 {activeTable === 'cars' && <CarsTable />}
