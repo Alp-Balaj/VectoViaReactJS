@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { Modal } from '@mui/material';
+
+const Box = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    z-index: 1000;
+`
 
 const Root = styled.div`
     background-color: white;
@@ -76,12 +87,11 @@ const FancyTable = styled.table`
     }
 `;
 
-const Window = styled.div`
-    height: 820px;
-    overflow-y: auto;
-`
 
 const UserTable = () => {
+    const [open, setOpen] = useState(false);
+    const [deleteUserID, setDeleteUserID] = useState(null);
+
     const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]);
     const [error, setError] = useState(null);
@@ -120,7 +130,8 @@ const UserTable = () => {
                 const response = await axios.get("https://localhost:7081/api/User/get-users");
                 const usersWithRoles = await Promise.all(response.data.map(async user => {
                     const roleResponse = await axios.get(`https://localhost:7081/api/Role/get-role-id/${user.roleID}`);
-                    return { ...user, roleName: roleResponse.data.llojiIRolit.toString() };
+                    console.log(roleResponse);
+                    return { ...user, roleName: roleResponse.data.llojiIRolit };
                 }));
                 setUsers(usersWithRoles);
             } catch (error) {
@@ -143,10 +154,11 @@ const UserTable = () => {
         }));
     };
 
-    const deleteUser = async (userID) => {
+    const deleteUser = async () => {
         try {
-            await axios.delete(`https://localhost:7081/api/User/delete-user-by-id/${userID}`);
-            setUsers(users.filter(user => user.id !== userID));
+            await axios.delete(`https://localhost:7081/api/User/delete-user-by-id/${deleteUserID}`);
+            setUsers(users.filter(user => user.id !== deleteUserID));
+            setOpen(false);
         } catch (error) {
             console.error('Error deleting user:', error);
             setError(error.message || 'Error deleting user');
@@ -155,6 +167,7 @@ const UserTable = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(formData);
         try {
             await axios.post("https://localhost:7081/api/User/add-user", formData);
             // Fetch users again after adding a new user
@@ -185,6 +198,7 @@ const UserTable = () => {
             setUsers(updatedUsers);
             setIsUpdating(false);
             setCurrentUser(null);
+            setShowTable(true);
         } catch (error) {
             console.error('Error updating user:', error);
             setError(error.message || 'Error updating user');
@@ -203,7 +217,11 @@ const UserTable = () => {
         setShowTable(!showTable);
         setIsUpdating(false);
         setShowForm(false); // Hide the form when showing the table
-        
+    };
+
+    const youSure = (userID) => {
+        setOpen(true);
+        setDeleteUserID(userID);
     };
 
     const toggleForm = async () => {
@@ -222,6 +240,16 @@ const UserTable = () => {
 };
     return (
         <Root>
+            <Modal open={open} onClose={()=>setOpen(false)}>
+                <Box>
+                    <h2>Are you sure you want to <span style={{color: 'red'}}>delete</span> this user?</h2>
+                    <p>This action cannot be undone.</p>
+                    <Buttons>
+                        <Button onClick={()=>setOpen(false)}>Cancel</Button>
+                        <Button onClick={deleteUser}>Delete</Button>
+                    </Buttons>
+                </Box>
+            </Modal>
             <Buttons>
                 <Button onClick={toggleTable}>{showTable ? 'Hide Users' : 'Show Users'}</Button>
                 <Button onClick={toggleForm}>{showForm ? 'Hide Add Users' : 'Add Users'}</Button>
@@ -255,7 +283,7 @@ const UserTable = () => {
                                     <td>{user.roleName}</td>
                                     <td>
                                         <Button onClick={() => handleUpdateClick(user)}>Update</Button>
-                                        <Button onClick={() => deleteUser(user.id)}>Delete</Button>
+                                        <Button onClick={() => youSure(user.id)}>Delete</Button>
                                     </td>
                                 </tr>
                             ))}
@@ -292,7 +320,7 @@ const UserTable = () => {
                             Role:
                             <select name="roleID" value={currentUser.roleID} onChange={handleUpdateChange}>
                                 {roles.map(role => (
-                                    <option key={role.id} value={role.id}>
+                                    <option key={role.roleID} value={role.roleID}>
                                         {role.llojiIRolit}
                                     </option>
                                 ))}
@@ -329,9 +357,9 @@ const UserTable = () => {
                         </label>
                         <label>
                             Role:
-                            <select name="roleID" value={currentUser.roleID} onChange={handleUpdateChange}>
+                            <select name="roleID" value={formData.roleID} onChange={handleChange}>
                                 {roles.map(role => (
-                                    <option key={role.id} value={role.id}>
+                                    <option key={role.roleID} value={role.roleID}>
                                         {role.llojiIRolit}
                                     </option>
                                 ))}

@@ -1,12 +1,15 @@
 import React from 'react';
 import TopNav from '../Components/DashboardComponents/TopNav';
 import styled from 'styled-components';
-import UserTable from '../Components/DashboardComponents/UserTable';
-import RoleTable from '../Components/DashboardComponents/RoleTable';
+import UserTable from '../Components/DashboardComponents/Users/UserTable';
+import RoleTable from '../Components/DashboardComponents/Users/RoleTable';
 import PickUpLocation from '../Components/DashboardComponents/PickUpLocation';
-import KompaniaTaxiTable from '../Components/DashboardComponents/KompaniaTaxiTable';
+import KompaniaTaxiTable from '../Components/DashboardComponents/KompaniaTaxi/KompaniaTaxiTable';
+import QytetiTable from '../Components/DashboardComponents/KompaniaTaxi/QytetiTable';
 import { useState } from 'react';
 import logo from '../Assets/logos/SiteLogo.jpg';
+import MarkaTable from '../Components/DashboardComponents/Cars/MarkaTable';
+import CarsTable from '../Components/DashboardComponents/Cars/CarsTable';
 
 
 const Dash = styled.div`
@@ -68,31 +71,36 @@ const Window = styled.div`
 
 
 const Dashboard = () => {
-  const [activeTable, setActiveTable] = useState(null); // 'user', 'role', or null
-  const [showUserButtons, setShowUserButtons] = useState(false); // State to control visibility of user buttons
-  const [showLocationButton, setShowLocationButton] = useState(false); // State to control visibility of location button
-  const [showKompaniaTaxiButtons, setShowKompaniaTaxiButtons] = useState(false); // State to control visibility of Kompania Taxi buttons
+  const [activeTable, setActiveTable] = useState(null);
+  const [showUserButtons, setShowUserButtons] = useState(false); 
+  const [showLocationButton, setShowLocationButton] = useState(false); 
+  const [showKompaniaTaxiButtons, setShowKompaniaTaxiButtons] = useState(false); 
+  const [showCarButtons, setShowCarButtons] = useState(false); 
 
 
 
   const toggleTable = (table) => {
     if (activeTable === table) {
-      setActiveTable(null); // If the same button is clicked, hide the table
+      setActiveTable(null);
     } else {
-      setActiveTable(table); // Otherwise, show the selected table
+      setActiveTable(table); 
     }
   };
 
   const handleUserLinkClick = () => {
-    setShowUserButtons(!showUserButtons); // Toggle visibility of user buttons
+    setShowUserButtons(!showUserButtons); 
   };
 
   const handleLocationLinkClick = () => {
-    setShowLocationButton(!showLocationButton); // Toggle visibility of location button
+    setShowLocationButton(!showLocationButton); 
   };
 
   const handleKompaniaTaxiLinkClick = () => {
-    setShowKompaniaTaxiButtons(!showKompaniaTaxiButtons); // Toggle visibility of user buttons
+    setShowKompaniaTaxiButtons(!showKompaniaTaxiButtons); 
+  };
+
+  const handleCarsLinkClick = () => {
+    setShowCarButtons(!showCarButtons); 
   };
 
   return (
@@ -124,6 +132,9 @@ const Dashboard = () => {
                             <li><a className='underNeath' onClick={() => toggleTable('kompTaxi')}>
                               {activeTable === 'kompTaxi' ? 'Hide Kompania Taxi Table' : 'Show Kompania Taxi Table'}
                             </a></li>
+                            <li><a className='underNeath' onClick={() => toggleTable('qyteti')}>
+                              {activeTable === 'qyteti' ? 'Hide Qyteti Table' : 'Show Qyteti Table'}
+                            </a></li>
                         </ul>
                       </Under>
                     )}
@@ -140,7 +151,21 @@ const Dashboard = () => {
                       </Under>
                     )}
                 </li>
-                <li><a onClick="/dashboard/cars">Cars</a></li>
+                <li>
+                    <a onClick={handleCarsLinkClick}>Cars</a>
+                    {showCarButtons && (
+                      <Under>
+                        <ul>
+                        <li><a className='underNeath' onClick={() => toggleTable('cars')}>
+                              {activeTable === 'cars' ? 'Hide Cars Table' : 'Show Cars Table'}
+                            </a></li>
+                            <li><a className='underNeath' onClick={() => toggleTable('marka')}>
+                              {activeTable === 'marka' ? 'Hide Marka Table' : 'Show Marka Table'}
+                            </a></li>
+                        </ul>
+                      </Under>
+                    )}
+                </li>
             </ul>
         </Side>
         <div>
@@ -150,6 +175,9 @@ const Dashboard = () => {
                 {activeTable === 'user' && <UserTable />}
                 {activeTable === 'location' && <PickUpLocation />}
                 {activeTable === 'kompTaxi' && <KompaniaTaxiTable />}
+                {activeTable === 'qyteti' && <QytetiTable />}
+                {activeTable === 'cars' && <CarsTable />}
+                {activeTable === 'marka' && <MarkaTable />}
             </Window>
         </div>
     </Dash>

@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { Modal } from '@mui/material';
+
+const Box = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    z-index: 1000;
+`
 
 const Root = styled.div`
     background-color: white;
@@ -77,6 +88,9 @@ const FancyTable = styled.table`
 `;
 
 const RoleTable = () => {
+    const [open, setOpen] = useState(false);
+    const [deleteRoleID, setDeleteRoleID] = useState(null);
+    
     const [roles, setRoles] = useState([]);
     const [error, setError] = useState(null);
     const [showTable, setShowTable] = useState(false);
@@ -119,10 +133,11 @@ const RoleTable = () => {
         }));
     };
 
-    const deleteRole = async (roleID) => {
+    const deleteRole = async () => {
         try {
-            await axios.delete(`https://localhost:7081/api/Role/delete-role-by-id/${roleID}`);
-            setRoles(roles.filter(role => role.id !== roleID));
+            await axios.delete(`https://localhost:7081/api/Role/delete-role-by-id/${deleteRoleID}`);
+            setRoles(roles.filter(role => role.roleID !== deleteRoleID));
+            setOpen(false);
         } catch (error) {
             console.error('Error deleting user:', error);
             setError(error.message || 'Error deleting user');
@@ -136,6 +151,8 @@ const RoleTable = () => {
             // Fetch users again after adding a new user
             const response = await axios.get("https://localhost:7081/api/Role/get-role");
             setRoles(response.data);
+            setShowTable(true);
+            setShowForm(false);
             // Clear form data after successful submission
             setFormData({
                 roleID: '',
@@ -150,11 +167,12 @@ const RoleTable = () => {
     const handleUpdateRole = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`https://localhost:7081/api/Role/update-role-by-id/${currentRole.id}`, currentRole);
-            const updatedRoles = roles.map(role => role.id === currentRole.id ? currentRole : role);
+            await axios.put(`https://localhost:7081/api/Role/update-role-by-id/${currentRole.roleID}`, currentRole);
+            const updatedRoles = roles.map(role => role.roleID === currentRole.roleID ? currentRole : role);
             setRoles(updatedRoles);
             setIsUpdating(false);
             setCurrentRole(null);
+            setShowTable(true);
         } catch (error) {
             console.error('Error updating user:', error);
             setError(error.message || 'Error updating user');
@@ -180,8 +198,24 @@ const RoleTable = () => {
         setIsUpdating(false);
         setShowTable(false); // Hide the table when showing the form
     };
+
+    const youSure = (roleID) => {
+        setOpen(true);
+        setDeleteRoleID(roleID);
+    };
+
     return (
         <Root>
+            <Modal open={open} onClose={()=>setOpen(false)}>
+                <Box>
+                    <h2>Are you sure you want to <span style={{color: 'red'}}>delete</span> this role?</h2>
+                    <p>This action cannot be undone.</p>
+                    <Buttons>
+                        <Button onClick={()=>setOpen(false)}>Cancel</Button>
+                        <Button onClick={deleteRole}>Delete</Button>
+                    </Buttons>
+                </Box>
+            </Modal>
             <Buttons>
                 <Button onClick={toggleTable}>{showTable ? 'Hide Roles' : 'Show Roles'}</Button>
                 <Button onClick={toggleForm}>{showForm ? 'Hide Add Roles' : 'Add Roles'}</Button>
@@ -205,7 +239,7 @@ const RoleTable = () => {
                                     <td>{role.llojiIRolit}</td>
                                     <td style={{display: 'flex', justifyContent: 'center'}}>
                                         <Button onClick={() => handleUpdateClick(role)}>Update</Button>
-                                        <Button onClick={() => deleteRole(role.id)}>Delete</Button>
+                                        <Button onClick={() => youSure(role.roleID)}>Delete</Button>
                                     </td>
                                 </tr>
                             ))}
@@ -226,7 +260,7 @@ const RoleTable = () => {
                             Lloji i Rolit:
                             <input type="text" name="llojiIRolit" value={currentRole.llojiIRolit} onChange={handleUpdateChange} />
                         </label>
-                        <button type="submit">Update Role</button>
+                        <Button type="submit">Update Role</Button>
                     </form>
                 </AddUsers>
             )}
@@ -243,7 +277,7 @@ const RoleTable = () => {
                             Lloji i Rolit:
                             <input type="text" name="llojiIRolit" value={formData.llojiIRolit} onChange={handleChange} />
                         </label>
-                        <button type="submit">Add Role</button>
+                        <Button type="submit">Add Role</Button>
                     </form>
                 </AddUsers>
             )}
