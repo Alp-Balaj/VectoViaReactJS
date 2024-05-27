@@ -52,7 +52,6 @@ const App = () => {
           <Route path='/dashboard' element={<PrivateRoute><Dashboard/></PrivateRoute>} />
           <Route path='*' element={<ErrorPage/>} />
           <Route path='/notAdmin' element={<NotAdmin />} />
-          <Route path='/dashboard/pick-up-location' element={<PrivateRoute><PickUpLocation/></PrivateRoute>} />
         </Routes>
     </Router>
   )
