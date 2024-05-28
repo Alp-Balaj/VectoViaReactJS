@@ -34,14 +34,51 @@ const Card = styled.div`
       padding: 25px 25px 25px 0px;
       width: 50%;
       height:100%;
-      .textPlacement{
-        height: 60%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .title{
+        height: 15%;
+        h1 {
+          font-size: 2.5em;
+          margin: 0;
+        }
       }
-      .buttonPlacement{
-        height: 40%;
-        display: flex;
-        justify-content: end;
-        align-items: end;
+      .textBody{
+        height: 80%;
+        
+        .textPlacement{
+
+          height: 60%;
+          display: flex;
+
+          .sinatra{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 35%;
+            ul{
+              list-style: none;
+            }
+          }
+
+          .sinatraAnswers{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 65%;
+            ul{
+              list-style: none;
+            }
+          }
+
+        }
+        .buttonPlacement{
+          height: 40%;
+          display: flex;
+          justify-content: end;
+          align-items: end;
+        }
       }
     }
     .Image{
@@ -96,8 +133,11 @@ const CallTaxi = () => {
       const fetchData = async () => {
         try {
           const response = await axios.get("https://localhost:7081/api/KompaniaTaxis/get-kompaniteTaxi");
-          setCompanies(response.data);
-          console.log(response.data); 
+          const companiesWithQyteti = await Promise.all(response.data.map(async company => {
+            const qytetiResponse = await axios.get(`https://localhost:7081/api/Qyteti/get-qyteti-id/${company.qytetiId}`);
+            return { ...company, qytetiName: qytetiResponse.data.name };
+          }));
+          setCompanies(companiesWithQyteti); 
         } catch (error) {
           console.error('Error fetching data:', error);
           setError(error.message || 'Error fetching data');
@@ -107,6 +147,7 @@ const CallTaxi = () => {
       fetchData();
     }, []);
       
+    
   return (
     <Calls>
       <div className="container">
@@ -122,45 +163,37 @@ const CallTaxi = () => {
       <Container maxWidth="lg">
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
-
-            <Card data-aos="fade-left" data-aos-duration="1500">
-              <div className="innerCard">
-                <div className="Image" style={{boxShadow: `0px 0px 20px 20px lightblue`}}>
-                    <img src={blueTaxi} alt="" />
-                </div>
-                <div className="Text">
-                    <div className="textPlacement">
-                      <h1 style={{color: `#267aaa`}}>Blue Taxi</h1>
-                      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, laboriosam? Delectus tenetur dicta doloribus sunt quo consectetur veritatis, voluptas facere iste, accusantium, minus enim ut.</p>
-                      <h4>Lorem ipsum dolor sit.</h4>
-                    </div>
-                    <div className="buttonPlacement">
-                      <Button style={{backgroundColor:`#267aaa`}}>Call Now!</Button>
-                    </div>
-                </div>
-              </div>
-            </Card>
-
-
-            {/* {companies.map(company => (
-              <Card key={company.id} data-aos="fade-left" data-aos-duration="1500">
+            {companies.map(company => (
+              <Card key={company.companyID}  data-aos={(company.companyID%2) === 0 ? "fade-left" : "fade-right"} data-aos-duration="1500">
                 <div className="innerCard">
-                  <div className="Image" style={{boxShadow: `0px 0px 20px 20px ${company.secondaryColor}`}}>
+                  <div className="Image" style={{boxShadow: `0px 0px 20px 20px ${company.secondaryColour}`}}>
                       <img src={company.image} alt="" />
                   </div>
                   <div className="Text">
-                      <div className="textPlacement">
-                        <h1 style={{color: `${company.secondaryColor}`}}>{company.name}</h1>
-                        <p>{company.description}</p>
-                        <h4>Lorem ipsum dolor sit.</h4>
+                      <div className="title">
+                        <h1 style={{color: `${company.primaryColour}`}}>{company.kompania}</h1>
                       </div>
-                      <div className="buttonPlacement">
-                        <Button style={{backgroundColor:`${company.secondaryColor}`}}>Call Now!</Button>
+                      <div className="textBody">
+                        <div className="textPlacement">
+                          <div className="sinatra">
+                            <h4>Contact us at:</h4>
+                            <h4>Our insurance:</h4>
+                            <h4>Find us in:</h4>
+                          </div>
+                          <div className="sinatraAnswers"> 
+                            <h4 style={{fontWeight:'300'}}>{company.contactInfo}</h4>
+                            <h4 style={{fontWeight:'300'}}> {company.sigurimi}</h4 >
+                            <h4 style={{fontWeight:'300'}}> {company.qytetiName}</h4>
+                          </div>
+                        </div>
+                        <div className="buttonPlacement">
+                          <Button style={{backgroundColor:`${company.primaryColour}`}}>Call Now!</Button>
+                        </div>
                       </div>
                   </div>
                 </div>
               </Card>
-            ))} */}
+            ))}
           </Grid>
         </Grid>
       </Container>

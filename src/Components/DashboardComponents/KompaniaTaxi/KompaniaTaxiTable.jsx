@@ -86,6 +86,12 @@ const FancyTable = styled.table`
     } 
 `;
 
+const CBox = styled.div`
+    width: 25px;
+    height: 25px;
+    border: 1px solid black;
+`
+
 const KompaniaTaxiTable = () => {
     const [open, setOpen] = useState(false);
     const [deleteCompanyID, setDeleteCompanyID] = useState(null);
@@ -97,7 +103,8 @@ const KompaniaTaxiTable = () => {
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         kompania: '',
-        location: '',
+        primaryColour: '',
+        secondaryColour: '',
         contactInfo: '',
         sigurimi: '',
         qyteti: ''
@@ -166,7 +173,8 @@ const KompaniaTaxiTable = () => {
             setCompanies(response.data);
             setFormData({
                 kompania: '',
-                location: '',
+                primaryColour: '',
+                secondaryColour: '',
                 contactInfo: '',
                 sigurimi: '',
                 qyteti: ''
@@ -253,7 +261,8 @@ const KompaniaTaxiTable = () => {
                             <tr>
                                 <th>Company ID</th>
                                 <th>Company Name</th>
-                                <th>Location</th>
+                                <th>Primary Colour</th>
+                                <th>Secondary Colour</th>
                                 <th>Contact Info</th>
                                 <th>Insurance</th>
                                 <th>Qyteti</th>
@@ -265,7 +274,8 @@ const KompaniaTaxiTable = () => {
                                 <tr key={company.companyID}>
                                     <td>{company.companyID}</td>
                                     <td>{company.kompania}</td>
-                                    <td>{company.location}</td>
+                                    <td><CBox style={{backgroundColor: company.primaryColour}}/>{company.primaryColour}</td>
+                                    <td><CBox style={{backgroundColor: company.secondaryColour}}/>{company.primaryColour}</td>
                                     <td>{company.contactInfo}</td>
                                     <td>{company.sigurimi}</td>
                                     <td>{company.qytetiName}</td>
@@ -289,8 +299,12 @@ const KompaniaTaxiTable = () => {
                             <input type="text" name="kompania" value={currentCompany.kompania} onChange={handleUpdateChange} />
                         </label>
                         <label>
-                            Location:
-                            <input type="text" name="location" value={currentCompany.location} onChange={handleUpdateChange} />
+                            Primary Colour:
+                            <input type="text" name="primaryColour" value={currentCompany.primaryColour} onChange={handleUpdateChange} />
+                        </label>
+                        <label>
+                            Secondary Colour:
+                            <input type="text" name="secondaryColour" value={currentCompany.secondaryColour} onChange={handleUpdateChange} />
                         </label>
                         <label>
                             Contact Info:
@@ -324,8 +338,12 @@ const KompaniaTaxiTable = () => {
                             <input type="text" name="kompania" value={formData.kompania} onChange={handleChange} />
                         </label>
                         <label>
-                            Location:
-                            <input type="text" name="location" value={formData.location} onChange={handleChange} />
+                            Primary Colour:
+                            <input type="text" name="primaryColour" value={formData.primaryColour} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Secondary Colour:
+                            <input type="text" name="secondaryColour" value={formData.secondaryColour} onChange={handleChange} />
                         </label>
                         <label>
                             Contact Info:
