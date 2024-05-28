@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useEffect} from "react";
 import '../../Pages/Style/styles.css';
 import { Container, Grid } from "@mui/material";
 import styled from "styled-components";
@@ -8,7 +8,9 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import WalletIcon from '@mui/icons-material/Wallet';
 import LocalTaxiIcon from '@mui/icons-material/LocalTaxi';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+  
 const TaxiServ = styled.div`
   background-color: #ebe8e8;
   padding-top: 150px;
@@ -17,7 +19,6 @@ const TaxiServ = styled.div`
 
 const Box = styled.div`
   background-color: #fff;
-  transition: background-color 0.3s ease;
   width: 100%;
   height: 300px;
   display: flex;
@@ -46,7 +47,6 @@ const Box = styled.div`
     width: 80%;
     height: 70%;
     background-color: white;
-    transition: background-color 0.3s ease;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -60,7 +60,7 @@ const Box = styled.div`
         justify-content: center;
         align-items: center;
         background-color: #d9aa00;
-        transition: background-color 0.6s ease;
+        transition: background-color 0.3s ease;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
@@ -86,12 +86,17 @@ const H3 = styled.div`
 `
 
 const TaxiServices = () => {
+
+  useEffect(() => {
+    AOS.init();
+  }, [])
+
   return (
     <TaxiServ>
       <div className="container">
         <div className="text-center">
-          <h2 className="section-heading text-uppercase">Taxi Services</h2>
-          <H3>
+          <h2 data-aos="zoom-out" className="section-heading text-uppercase">Taxi Services</h2>
+          <H3 data-aos="zoom-out">
             If you need a taxi you have come to the right place.
           </H3>
         </div>
@@ -99,7 +104,7 @@ const TaxiServices = () => {
       <Container maxWidth="xl">
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <Box>
+            <Box data-aos="zoom-out-right">
               <div className="MiniBox">
                 <div className="icon">
                   <div className="iconImg">
@@ -114,7 +119,7 @@ const TaxiServices = () => {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <Box>
+            <Box data-aos="zoom-out-down">
               <div className="MiniBox">
                 <div className="icon">
                   <div className="iconImg">
@@ -129,7 +134,7 @@ const TaxiServices = () => {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <Box>
+            <Box data-aos="zoom-out-left">
               <div className="MiniBox">
                 <div className="icon">
                   <div className="iconImg">
@@ -144,7 +149,7 @@ const TaxiServices = () => {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <Box>
+            <Box data-aos="fade-up-right">
               <div className="MiniBox">
                 <div className="icon">
                   <div className="iconImg">
@@ -159,7 +164,7 @@ const TaxiServices = () => {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <Box>
+            <Box data-aos="fade-up">
               <div className="MiniBox">
                 <div className="icon">
                   <div className="iconImg">
@@ -174,7 +179,7 @@ const TaxiServices = () => {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <Box>
+            <Box data-aos="fade-up-left">
               <div className="MiniBox">
                 <div className="icon">
                   <div className="iconImg">

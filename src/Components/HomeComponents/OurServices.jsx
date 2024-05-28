@@ -20,7 +20,7 @@ const OurServices = () => {
             </h3>
           </div>
           <div className="row text-center easyfix">
-            <div className="col-md-4">
+            <div data-aos="fade-up" data-aos-duration="750" className="col-md-4">
               <span className="fa-stack fa-4x">
                 <i className="fas fa-circle fa-stack-2x text-primary"></i>
                 <i className="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
@@ -32,7 +32,7 @@ const OurServices = () => {
                 impedit.
               </p>
             </div>
-            <div className="col-md-4">
+            <div data-aos="fade-up" data-aos-duration="750" className="col-md-4">
               <span className="fa-stack fa-4x">
                 <i className="fas fa-circle fa-stack-2x text-primary"></i>
                 <i className="fas fa-lock fa-stack-1x fa-inverse"></i>
