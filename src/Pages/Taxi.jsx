@@ -1,8 +1,15 @@
 import React from 'react'
+import Header from '../Components/Header'
+import Hero from '../Components/TaxiComponents/Hero'
+import TaxiServices from '../Components/TaxiComponents/TaxiServices'
 
 const Taxi = () => {
   return (
-    <div style={{display:'flex', justifyContent: 'center', alignItems:'center', height:'100vh' }}><h1>Taxi is under construction.</h1></div>
+    <div>
+      <Header/>
+      <Hero/>
+      <TaxiServices/>
+    </div>
   )
 }
 
