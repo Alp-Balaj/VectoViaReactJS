@@ -9,7 +9,6 @@ import Dashboard from './Pages/Dashboard';
 import ErrorPage from './Pages/ErrorPage';
 import PrivateRoute from './Components/PrivateRoute';
 import NotAdmin from './Pages/NotAdmin.jsx';
-import PickUpLocation from './Components/DashboardComponents/PickUpLocation.jsx';
 import { jwtDecode } from 'jwt-decode';
 
 
@@ -21,7 +20,6 @@ const App = () => {
     if (token) {
       const decodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-      console.log(currentTime);
       if (decodedToken.exp < currentTime) {
         logout();
       }

@@ -7,7 +7,7 @@ import { Modal, Box, Button } from '@mui/material';
 import { AppStateProvider } from '../Context/AppStateProvider';
 import Login from '../Header/Login';
 import SignUp from '../Header/SignUp';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 
 
@@ -108,7 +108,7 @@ export default function TemporaryDrawer() {
 
   return (
     <div>
-      <Button style={{color: '#FFC800', marginLeft:'0px'}} onClick={toggleDrawer(true)}><img style={{height: '50px', borderRadius:'15px 0px 0px 15px'}} src={siteLogo} /></Button>
+      <Button style={{color: '#FFC800', marginLeft:'0px'}} onClick={toggleDrawer(true)}><img style={{height: '50px', borderRadius:'15px 0px 0px 15px'}} src={siteLogo} alt='idk' /></Button>
       <Drawer style={{backgroundColor: '#000000b9'}} open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>

@@ -45,8 +45,6 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(true);
 
-
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -71,6 +69,7 @@ const Login = () => {
         // Decode JWT to get user info
         const userInfo = jwtDecode(token); // Decode JWT token
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        localStorage.setItem("refreshToken", JSON.stringify(userInfo.exp));
         
         // Dispatch login action
         dispatch({
@@ -78,6 +77,7 @@ const Login = () => {
           payload: {
             token: token,
             userInfo: userInfo,
+            refreshToken: userInfo.exp,
           }
         });
         window.location.href = '/';

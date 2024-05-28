@@ -1,4 +1,5 @@
 import React from "react";
+import '../../Pages/Style/styles.css';
 import { Container, Grid } from "@mui/material";
 import styled from "styled-components";
 import HouseIcon from "@mui/icons-material/House";
@@ -74,9 +75,27 @@ const Box = styled.div`
   }
 `;
 
+const H3 = styled.div`
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+  font-family: "Roboto Slab", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  margin-bottom: 4rem;
+  --bs-text-opacity: 1;
+  color: #6c757d !important;
+`
+
 const TaxiServices = () => {
   return (
     <TaxiServ>
+      <div className="container">
+        <div className="text-center">
+          <h2 className="section-heading text-uppercase">Taxi Services</h2>
+          <H3>
+            If you need a taxi you have come to the right place.
+          </H3>
+        </div>
+      </div>
       <Container maxWidth="xl">
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
