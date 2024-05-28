@@ -121,7 +121,27 @@ const CallTaxi = () => {
       <Container maxWidth="lg">
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
-            {companies.map(company => (
+
+            <Card data-aos="fade-left" data-aos-duration="1500">
+              <div className="innerCard">
+                <div className="Image" style={{boxShadow: `0px 0px 20px 20px lightblue`}}>
+                    <img src={blueTaxi} alt="" />
+                </div>
+                <div className="Text">
+                    <div className="textPlacement">
+                      <h1 style={{color: `#267aaa`}}>Blue Taxi</h1>
+                      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, laboriosam? Delectus tenetur dicta doloribus sunt quo consectetur veritatis, voluptas facere iste, accusantium, minus enim ut.</p>
+                      <h4>Lorem ipsum dolor sit.</h4>
+                    </div>
+                    <div className="buttonPlacement">
+                      <Button style={{backgroundColor:`#267aaa`}}>Call Now!</Button>
+                    </div>
+                </div>
+              </div>
+            </Card>
+
+
+            {/* {companies.map(company => (
               <Card key={company.id} data-aos="fade-left" data-aos-duration="1500">
                 <div className="innerCard">
                   <div className="Image" style={{boxShadow: `0px 0px 20px 20px ${company.secondaryColor}`}}>
@@ -139,7 +159,7 @@ const CallTaxi = () => {
                   </div>
                 </div>
               </Card>
-            ))}
+            ))} */}
           </Grid>
         </Grid>
       </Container>
