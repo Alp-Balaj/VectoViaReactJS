@@ -124,10 +124,7 @@ const KompaniaTaxiTable = () => {
             try {
                 const response = await axios.get("https://localhost:7081/api/KompaniaTaxis/get-kompaniteTaxi");
                 const companiesWithQyteti = await Promise.all(response.data.map(async company => {
-                    // console.log("TI QI MOTRAT",company.qytetiId);
-                    
                     const qytetiResponse = await axios.get(`https://localhost:7081/api/Qyteti/get-qyteti-id/${company.qytetiId}`);
-                    // console.log('Qyteti response:', qytetiResponse.data);
                     return { ...company, qytetiName: qytetiResponse.data.name };
                 }));
                 setCompanies(companiesWithQyteti);
