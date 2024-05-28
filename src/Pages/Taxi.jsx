@@ -3,6 +3,7 @@ import Header from '../Components/Header'
 import Hero from '../Components/TaxiComponents/Hero'
 import TaxiServices from '../Components/TaxiComponents/TaxiServices'
 import CallTaxi from '../Components/TaxiComponents/CallTaxi'
+import Footer from '../Components/Footer'
 
 const Taxi = () => {
   return (
@@ -11,6 +12,7 @@ const Taxi = () => {
       <Hero/>
       <TaxiServices/>
       <CallTaxi/>
+      <Footer/>
     </div>
   )
 }

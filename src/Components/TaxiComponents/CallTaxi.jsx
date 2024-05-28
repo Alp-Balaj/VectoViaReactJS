@@ -96,7 +96,8 @@ const CallTaxi = () => {
       const fetchData = async () => {
         try {
           const response = await axios.get("https://localhost:7081/api/KompaniaTaxis/get-kompaniteTaxi");
-          setCompanies(response.data); 
+          setCompanies(response.data);
+          console.log(response.data); 
         } catch (error) {
           console.error('Error fetching data:', error);
           setError(error.message || 'Error fetching data');
