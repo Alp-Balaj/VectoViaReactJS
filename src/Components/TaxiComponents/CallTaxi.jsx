@@ -3,7 +3,6 @@ import { Container, Grid } from "@mui/material";
 import styled from "styled-components";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import blueTaxi from '../../Assets/Images/blueTaxi.jpg';
 import axios from "axios";
 
 const Calls = styled.div`
@@ -13,6 +12,7 @@ const Calls = styled.div`
 `;
 
 const Card = styled.div`
+  margin: 35px 0px;
   background-color: #ebe8e849;
   width: 100%;
   height: 450px;
@@ -167,7 +167,7 @@ const CallTaxi = () => {
               <Card key={company.companyID}  data-aos={(company.companyID%2) === 0 ? "fade-left" : "fade-right"} data-aos-duration="1500">
                 <div className="innerCard">
                   <div className="Image" style={{boxShadow: `0px 0px 20px 20px ${company.secondaryColour}`}}>
-                      <img src={company.image} alt="" />
+                      <img src={company.imageUrl} alt="" />
                   </div>
                   <div className="Text">
                       <div className="title">

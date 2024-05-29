@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Modal } from '@mui/material';
+import { ChromePicker  } from 'react-color';
 
 const Box = styled.div`
     position: absolute;
@@ -83,6 +84,10 @@ const FancyTable = styled.table`
         color: black;
         padding: 15px 10px;
         transition: background-color 0.3s;
+        img{
+            width: 150px;
+            height: 150px;
+        }
     } 
 `;
 
@@ -103,6 +108,7 @@ const KompaniaTaxiTable = () => {
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         kompania: '',
+        imageUrl: '',
         primaryColour: '',
         secondaryColour: '',
         contactInfo: '',
@@ -173,6 +179,7 @@ const KompaniaTaxiTable = () => {
             setCompanies(response.data);
             setFormData({
                 kompania: '',
+                imageUrl: '',
                 primaryColour: '',
                 secondaryColour: '',
                 contactInfo: '',
@@ -236,6 +243,23 @@ const KompaniaTaxiTable = () => {
         }
     };
 
+    const handleOnChangePm = (color) => {
+        handleUpdateChange({ target: { name: 'primaryColour', value: color.hex } });
+    };
+
+    const handleOnChangeSc = (color) => {
+        handleUpdateChange({ target: { name: 'secondaryColour', value: color.hex } });
+    };
+
+    const handleChangePm = (color) => {
+        handleChange({ target: { name: 'primaryColour', value: color.hex } });
+    };
+
+    const handleChangeSc = (color) => {
+        handleChange({ target: { name: 'secondaryColour', value: color.hex } });
+    };
+    
+
     return (
         <Root>
             <Modal open={open} onClose={() => setOpen(false)}>
@@ -260,6 +284,7 @@ const KompaniaTaxiTable = () => {
                         <thead>
                             <tr>
                                 <th>Company ID</th>
+                                <th>Company Image</th>
                                 <th>Company Name</th>
                                 <th>Primary Colour</th>
                                 <th>Secondary Colour</th>
@@ -273,6 +298,7 @@ const KompaniaTaxiTable = () => {
                             {companies.map(company => (
                                 <tr key={company.companyID}>
                                     <td>{company.companyID}</td>
+                                    <td><img src={company.imageUrl} alt="" /></td>
                                     <td>{company.kompania}</td>
                                     <td><CBox style={{backgroundColor: company.primaryColour}}/>{company.primaryColour}</td>
                                     <td><CBox style={{backgroundColor: company.secondaryColour}}/>{company.primaryColour}</td>
@@ -299,12 +325,16 @@ const KompaniaTaxiTable = () => {
                             <input type="text" name="kompania" value={currentCompany.kompania} onChange={handleUpdateChange} />
                         </label>
                         <label>
-                            Primary Colour:
-                            <input type="text" name="primaryColour" value={currentCompany.primaryColour} onChange={handleUpdateChange} />
+                            Company Image:
+                            <input type="text" name="imageUrl" value={currentCompany.imageUrl} onChange={handleUpdateChange} />
                         </label>
-                        <label>
+                        <label style={{display:'flex',flexDirection:'row'}}>
+                            Primary Colour:
+                            <input type="color" id="color" name="primaryColour" value={currentCompany.primaryColour} onChange={(e) => handleOnChangePm({ hex: e.target.value })}/>
+                        </label>
+                        <label style={{display:'flex',flexDirection:'row'}}>
                             Secondary Colour:
-                            <input type="text" name="secondaryColour" value={currentCompany.secondaryColour} onChange={handleUpdateChange} />
+                            <input type="color" id="color" name="secondaryColour" value={currentCompany.secondaryColour} onChange={(e) => handleOnChangeSc({ hex: e.target.value })}/>
                         </label>
                         <label>
                             Contact Info:
@@ -334,16 +364,20 @@ const KompaniaTaxiTable = () => {
                     <h2>Add New Company</h2>
                     <form onSubmit={handleSubmit}>
                         <label>
-                            Kompania:
+                            Company Name:
                             <input type="text" name="kompania" value={formData.kompania} onChange={handleChange} />
                         </label>
                         <label>
-                            Primary Colour:
-                            <input type="text" name="primaryColour" value={formData.primaryColour} onChange={handleChange} />
+                            Company Image:
+                            <input type="text" name="imageUrl" value={formData.imageUrl} onChange={handleChange} />
                         </label>
-                        <label>
+                        <label style={{display:'flex',flexDirection:'row'}}>
+                            Primary Colour:
+                            <input type="color" id="color" name="primaryColour" value={formData.primaryColour} onChange={(e) => handleChangePm({ hex: e.target.value })}/>
+                        </label>
+                        <label style={{display:'flex',flexDirection:'row'}}>
                             Secondary Colour:
-                            <input type="text" name="secondaryColour" value={formData.secondaryColour} onChange={handleChange} />
+                            <input type="color" id="color" name="secondaryColour" value={formData.secondaryColour} onChange={(e) => handleChangeSc({ hex: e.target.value })}/>
                         </label>
                         <label>
                             Contact Info:
