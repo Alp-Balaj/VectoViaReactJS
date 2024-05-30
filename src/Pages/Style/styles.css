@@ -11378,3 +11378,145 @@ section#contact form#contactForm :-ms-input-placeholder {
   width: 100%;
   height: 100%;
 }
+
+
+.mastheadCar2 {
+  background-image: url('C:\Users\Loriku\Desktop\VectoVia-Front\VectoViaReactJS\src\Assets\Images\bg-Rent.avif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 700px; /* Adjust the height as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.mastheadCar2-subheading {
+  color: white; 
+  font-size: 24px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
+  margin-bottom: 20px; 
+  font-family: 'Arial', sans-serif; 
+}
+
+.mastheadCar2-heading {
+  color: white; 
+  font-size: 48px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
+  margin-bottom: 30px; 
+  font-family: 'Playfair Display', serif;
+}
+
+.company-logo {
+    width: 100px;
+    height: auto;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.company-logo:hover {
+    transform: scale(1.05);
+}
+
+
+
+.company-container {
+
+  margin-top: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 40px;
+}
+
+/* Individual company card styling */
+.company-card {
+  background: #fff;
+  border: 2px solid #ff4d4d;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  color: #333;
+  padding: 30px;
+  width: 45%;
+  margin: 20px;
+  transition: transform 0.3s ease-in-out;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+}
+
+.company-card:hover {
+  transform: scale(1.05);
+  background: #ff4d4d;
+  color: #fff;
+}
+
+.company-logo2 {
+  border: 2px solid #ff4d4d;
+  border-radius: 15px;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-bottom: 20px;
+  transition: border 0.3s ease-in-out;
+}
+
+.company-card:hover .company-logo2 {
+  border: 2px solid #fff;
+}
+
+.company-card h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  transition: color 0.3s ease-in-out;
+}
+
+.company-card:hover h2 {
+  color: #fff;
+}
+
+.company-card p {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.company-card:hover p {
+  color: #fff;
+}
+
+.company-card button {
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  font-size: 1rem;
+}
+
+.company-card button:hover {
+  background-color: #fff;
+  color: #ff4d4d;
+  border: 2px solid #ff4d4d;
+}
+
+.rac{
+  margin-top: 25px;
+  text-align: center;
+  font-size: 26px;
+  font-family: 'Playfair Display', serif;
+  font-weight: bold; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
+  
+}

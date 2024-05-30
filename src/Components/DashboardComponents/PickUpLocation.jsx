@@ -245,7 +245,7 @@ const PickUpLocations = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:5108/api/PickUpLocation/get-pickUpLocation");
+                const response = await axios.get("https://localhost:7081/api/PickUpLocation/get-pickUpLocation");
                 setLocations(response.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -269,8 +269,8 @@ const PickUpLocations = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5108/api/PickUpLocation/add-PickUpLocation", formData);
-            const response = await axios.get("http://localhost:5108/api/PickUpLocation/get-pickUpLocation");
+            await axios.post("https://localhost:7081/api/PickUpLocation/add-PickUpLocation", formData);
+            const response = await axios.get("https://localhost:7081/api/PickUpLocation/get-pickUpLocation");
             setLocations(response.data);
             setFormData({
                 locationName: '',
@@ -288,7 +288,7 @@ const PickUpLocations = () => {
     const handleUpdateLocation = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:5108/api/PickUpLocation/update-PickUpLocation-by-id/${currentLocation.pickUpLocationID}`, currentLocation);
+            await axios.put(`https://localhost:7081/api/PickUpLocation/update-PickUpLocation-by-id/${currentLocation.pickUpLocationID}`, currentLocation);
             const updatedLocations = locations.map(location => location.pickUpLocationID === currentLocation.pickUpLocationID ? currentLocation : location);
             setLocations(updatedLocations);
             setIsUpdating(false);
@@ -328,7 +328,7 @@ const PickUpLocations = () => {
 
     const handleDeleteLocation = async () => {
         try {
-            await axios.delete(`http://localhost:5108/api/PickUpLocation/delete-PickUpLocation-by-id/${deleteLocationID}`);
+            await axios.delete(`https://localhost:7081/api/PickUpLocation/delete-PickUpLocation-by-id/${deleteLocationID}`);
             setLocations(locations.filter(location => location.pickUpLocationID !== deleteLocationID));
             closeModal();
         } catch (error) {
@@ -386,7 +386,7 @@ const PickUpLocations = () => {
                 <UpdateModal isOpen={isUpdateModalOpen} onRequestClose={closeUpdateModal}>
                     <h2>Update Location</h2>
                     <UpdateForm onSubmit={handleUpdateLocation}>
-                        {/* Render your update form inputs here */}
+                        
                     </UpdateForm>
                 </UpdateModal>
             )}

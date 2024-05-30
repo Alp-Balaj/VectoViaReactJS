@@ -3,7 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import Modal from 'react-modal';
-import MultiSelectDropdown from './MultiSelect';
+import Select from 'react-select'; 
 
 const Layout = styled.div`
     display: flex;
@@ -38,39 +38,33 @@ const AddRent = styled.div`
     justify-content: center;
     align-items: center;
     color: #343a40;
-
     h2 {
         margin-bottom: 20px;
         font-size: 24px;
         color: #2c3036;
     }
-
     form {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         width: 300px;
-
         label {
             display: flex;
             flex-direction: column;
             margin-bottom: 15px;
             color: #2c3036;
-
             input, select {
                 padding: 10px;
                 border: 1px solid #ced4da;
                 border-radius: 5px;
                 outline: none;
                 transition: border-color 0.3s;
-
                 &:focus {
                     border-color: #ffc107;
                 }
             }
         }
-
         button[type="submit"] {
             background-color: #ffc107;
             color: #343a40;
@@ -80,7 +74,6 @@ const AddRent = styled.div`
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
-
             &:hover {
                 background-color: #ffca2b;
             }
@@ -174,12 +167,15 @@ const KompaniaRent = () => {
     const [showForm, setShowForm] = useState(false);
     const [showTable, setShowTable] = useState(false);
     const [formData, setFormData] = useState({
-        Kompania: '',
-        Qyteti: '',
-        ContactInfo: '',
-        Sigurimi: '',
-        PickUpLocationIDs: []
+        kompania: '',
+        companyLogoUrl: '',
+        qyteti: '',
+        contactInfo: '',
+        sigurimi: '',
+        pickUpLocationIDs: []
     });
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [selectedRecord, setSelectedRecord] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteKompaniaRentID, setDeleteKompaniaRentID] = useState(null);
     const [error, setError] = useState(null);
@@ -187,7 +183,7 @@ const KompaniaRent = () => {
     useEffect(() => {
         const fetchPickUpLocations = async () => {
             try {
-                const response = await axios.get("http://localhost:5108/api/PickUpLocation/get-pickUpLocation");
+                const response = await axios.get("https://localhost:7081/api/PickUpLocation/get-pickUpLocation");
                 setPickUpLocations(response.data);
             } catch (error) {
                 console.error('Error fetching pick-up locations:', error);
@@ -199,7 +195,7 @@ const KompaniaRent = () => {
 
     const fetchKompaniaRents = async () => {
         try {
-            const response = await axios.get("http://localhost:5108/api/KompaniaRent/get-kompaniteRent");
+            const response = await axios.get("https://localhost:7081/api/KompaniaRent/get-kompaniteRent");
             setKompaniaRents(response.data);
         } catch (error) {
             console.error('Error fetching kompania rents:', error);
@@ -212,23 +208,34 @@ const KompaniaRent = () => {
             ...prevState,
             PickUpLocationIDs: selectedOptions
         }));
+       
+      
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5108/api/KompaniaRent/add-KompaniaRent", formData);
-            console.log('Kompania Rent added successfully.');
+            if (isEditMode) {
+                await axios.put(`https://localhost:7081/api/KompaniaRent/update-KompaniaRent-by-id/${selectedRecord.companyID}`, formData);
+                console.log('Kompania Rent updated successfully.');
+            } else {
+                await axios.post("https://localhost:7081/api/KompaniaRent/add-KompaniaRent", formData);
+                console.log('Kompania Rent added successfully.');
+            }
             setFormData({
-                Kompania: '',
-                Qyteti: '',
-                ContactInfo: '',
-                Sigurimi: '',
-                PickUpLocationIDs: []
+                kompania: '',
+                companyLogoUrl: '',
+                qyteti: '',
+                contactInfo: '',
+                sigurimi: '',
+                pickUpLocationIDs: []
             });
             fetchKompaniaRents(); 
+            setShowForm(false);
+            setShowTable(true);
+            setIsEditMode(false);
         } catch (error) {
-            console.error('Error adding Kompania Rent:', error);
+            console.error('Error saving Kompania Rent:', error);
         }
     };
 
@@ -257,16 +264,15 @@ const KompaniaRent = () => {
             console.error('No KompaniaRent ID to delete');
             return;
         }
-    
+
         try {
             console.log('Deleting Kompania Rent with ID:', deleteKompaniaRentID);
-            const response = await axios.delete(`http://localhost:5108/api/KompaniaRent/delete-kompaniaRent-by-id//${deleteKompaniaRentID}`);
+            const response = await axios.delete(`https://localhost:7081/api/KompaniaRent/delete-kompaniaRent-by-id/${deleteKompaniaRentID}`);
             console.log('Delete response:', response.data);
-    
-            
-            const updatedKompaniaRents = kompaniaRents.filter(rent => rent.kompaniaRentID !== deleteKompaniaRentID);
-            console.log('Updated Kompania Rents:', updatedKompaniaRents);
-            setKompaniaRents(updatedKompaniaRents);
+
+
+            fetchKompaniaRents();
+           
             closeModal();
         } catch (error) {
             console.error('Error deleting Kompania Rent:', error.response ? error.response.data : error.message);
@@ -274,90 +280,116 @@ const KompaniaRent = () => {
         }
     };
 
-    return (        <Layout>
-        <MainContent>
-            <Buttons>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Kompania Rent Form' : 'Add Kompania Rent'}</Button>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Kompania Rents' : 'Show KompaniaRents'}</Button>
-            </Buttons>
+    const openEditForm = (record) => {
+        setIsEditMode(true);
+        setSelectedRecord(record);
+        setFormData({
+            kompania: record.kompania,
+            companyLogoUrl: record.companyLogoUrl,
+            qyteti: record.qyteti,
+            contactInfo: record.contactInfo,
+            sigurimi: record.sigurimi,
+            pickUpLocationIDs: record.pickUpLocations.map(loc => loc.pickUpLocationID)
+        });
+        setShowForm(true);
+        setShowTable(false);
+    };
 
-            {showForm && (
-                <AddRent>
-                    <h2>Add New Kompania Rent</h2>
-                    <form onSubmit={handleSubmit}>
-                        <label>
-                            Company Name:
-                            <input type="text" name="Kompania" value={formData.Kompania} onChange={(e) => setFormData({ ...formData, Kompania: e.target.value })} />
-                        </label>
-                        <label>
-                            City:
-                            <input type="text" name="Qyteti" value={formData.Qyteti} onChange={(e) => setFormData({ ...formData, Qyteti: e.target.value })} />
-                        </label>
-                        <label>
-                            Contact Info:
-                            <input type="text" name="ContactInfo" value={formData.ContactInfo} onChange={(e) => setFormData({ ...formData, ContactInfo: e.target.value })} />
-                        </label>
-                        <label>
-                            Insurance:
-                            <input type="text" name="Sigurimi" value={formData.Sigurimi} onChange={(e) => setFormData({ ...formData, Sigurimi: e.target.value })} />
-                        </label>
-                        <label>
-                            PickUp Location:
-                            <MultiSelectDropdown
-                                options={pickUpLocations}
-                                selectedOptions={formData.PickUpLocationIDs}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <button type="submit">Add Kompania Rent</button>
-                    </form>
-                </AddRent>
-            )}
+    return (        
+        <Layout>
+            <MainContent>
+                <Buttons>
+                    <Button onClick={toggleForm}>{showForm ? 'Hide Kompania Rent Form' : 'Add Kompania Rent'}</Button>
+                    <Button onClick={toggleTable}>{showTable ? 'Hide Kompania Rents' : 'Show KompaniaRents'}</Button>
+                </Buttons>
 
-            {showTable && (
-                <TableContainer>
-                    {error && <div>Error: {error}</div>}
-                    <h2>Kompania Rent List</h2>
-                    <FancyTable>
-                        <thead>
-                            <tr>
-                                <Th>ID</Th>
-                                <Th>Company Name</Th>
-                                <Th>City</Th>
-                                <Th>Contact Info</Th>
-                                <Th>Insurance</Th>
-                                <Th>PickUp Location</Th>
-                                <Th>Actions</Th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {kompaniaRents.map((rent, index) => (
-                            <Tr key={rent.kompaniaRentID}>
-                                <Td>{rent.kompaniaRentID}</Td>
-                                <Td>{rent.kompania}</Td>
-                                <Td>{rent.qyteti}</Td>
-                                <Td>{rent.contactInfo}</Td>
-                                <Td>{rent.sigurimi}</Td>
-                                <Td>{rent.pickUpLocations?.map(loc => `${loc.locationName}, ${loc.city}`).join(' || ')}</Td>
-                                <Td>
-                                    <FaEdit style={{ cursor: 'pointer', marginRight: '8px' }} />
-                                    <FaTrash onClick={() => openModal(rent.kompaniaRentID)} style={{ cursor: 'pointer' }} />
-                                </Td>
-                            </Tr>
-                        ))}
-                        </tbody>
-                    </FancyTable>
-                </TableContainer>
-            )}
+                {showForm && (
+                    <AddRent>
+                        <h2>{isEditMode ? 'Edit Kompania Rent' : 'Add New Kompania Rent'}</h2>
+                        <form onSubmit={handleSubmit}>
+                            <label>
+                                Company Name:
+                                <input type="text" name="kompania" value={formData.kompania} onChange={(e) => setFormData({ ...formData, kompania: e.target.value })} />
+                            </label>
+                            <label>
+                                Company Logo URL:
+                                <input type="text" name="companyLogoUrl" value={formData.companyLogoUrl} onChange={(e) => setFormData({ ...formData, companyLogoUrl: e.target.value })} />
+                            </label>
+                            <label>
+                                City:
+                                <input type="text" name="qyteti" value={formData.qyteti} onChange={(e) => setFormData({ ...formData, qyteti: e.target.value })} />
+                            </label>
+                            <label>
+                                Contact Info:
+                                <input type="text" name="contactInfo" value={formData.contactInfo} onChange={(e) => setFormData({ ...formData, contactInfo: e.target.value })} />
+                            </label>
+                            <label>
+                                Insurance:
+                                <input type="text" name="sigurimi" value={formData.sigurimi} onChange={(e) => setFormData({ ...formData, sigurimi: e.target.value })} />
+                            </label>
+                            <label>
+                                PickUp Location:
+                                <Select
+                                  isMulti
+                                  name="pickUpLocationIDs"
+                                  options={pickUpLocations.filter(location => location.companyID === null).map(location => ({ value: location.pickUpLocationID, label: location.locationName }))}
+                                  className="basic-multi-select"
+                                  classNamePrefix="select"
+                                  value={formData.pickUpLocationIDs.map(id => pickUpLocations.find(loc => loc.pickUpLocationID === id)).map(loc => ({ value: loc.pickUpLocationID, label: loc.locationName }))}
+                                  onChange={(selectedOptions) => setFormData({ ...formData, pickUpLocationIDs: selectedOptions.map(option => option.value) })}
+                              />
+                            </label>
+                            <button type="submit">{isEditMode ? 'Update Kompania Rent' : 'Add Kompania Rent'}</button>
+                        </form>
+                    </AddRent>
+                )}
 
-            <ConfirmationModal
-                isOpen={isModalOpen}
-                onRequestClose={closeModal}
-                onConfirm={handleDeleteKompaniaRent}
-            />
-        </MainContent>
-    </Layout>
-);
+                {showTable && (
+                    <TableContainer>
+                        {error && <div>Error: {error}</div>}
+                        <h2>Kompania Rent List</h2>
+                        <FancyTable>
+                            <thead>
+                                <tr>
+                                    <Th>ID</Th>
+                                    <Th>Company Name</Th>
+                                    <Th>Company Logo</Th>
+                                    <Th>City</Th>
+                                    <Th>Contact Info</Th>
+                                    <Th>Insurance</Th>
+                                    <Th>PickUp Location</Th>
+                                    <Th>Actions</Th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {kompaniaRents.map((rent, index) => (
+                                <Tr key={rent.companyID}>
+                                    <Td>{rent.companyID}</Td>
+                                    <Td>{rent.kompania}</Td>
+                                    <img src={rent.companyLogoUrl} alt="Company Logo"  className="company-logo" style={{ width: '100px', height: 'auto' }} />
+                                    <Td>{rent.qyteti}</Td>
+                                    <Td>{rent.contactInfo}</Td>
+                                    <Td>{rent.sigurimi}</Td>
+                                    <Td>{rent.pickUpLocations?.map(loc => `${loc.locationName}, ${loc.city}`).join(' || ')}</Td>
+                                    <Td>
+                                        <FaEdit onClick={() => openEditForm(rent)} style={{ cursor: 'pointer', marginRight: '8px' }} />
+                                        <FaTrash onClick={() => openModal(rent.companyID)} style={{ cursor: 'pointer' }} />
+                                    </Td>
+                                </Tr>
+                            ))}
+                            </tbody>
+                        </FancyTable>
+                    </TableContainer>
+                )}
+
+                <ConfirmationModal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    onConfirm={handleDeleteKompaniaRent}
+                />
+            </MainContent>
+        </Layout>
+    );
 };
 
 export default KompaniaRent;
