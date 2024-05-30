@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import AddIcon from '@mui/icons-material/Add';
 import Modal from 'react-modal';
 
 
@@ -227,6 +227,7 @@ const PickUpLocations = () => {
 
     const handleUpdateClick = (location) => {
         setIsUpdating(true);
+        setShowTable(false);
         setCurrentLocation(location);
     };
 
@@ -309,6 +310,7 @@ const PickUpLocations = () => {
 
     const toggleTable = () => {
         setShowTable(!showTable);
+        setIsUpdating(false);
         setShowForm(false);
     };
 
@@ -341,11 +343,6 @@ const PickUpLocations = () => {
         <Layout>
             <div style={{ width: '80vw' }}>
                 <MainContent>
-                    <Buttons>
-                        <Button onClick={toggleTable}>{showTable ? 'Hide PickUp Locations' : 'Show PickUp Locations'}</Button>
-                        <Button onClick={toggleForm}>{showForm ? 'Hide  PickUpLocation' : 'Add PickUp Location'}</Button>
-                    </Buttons>
-
                     {showTable && (
                         <TableContainer>
                             {error && <div>Error: {error}</div>}
@@ -358,7 +355,7 @@ const PickUpLocations = () => {
                                         <Th>Address</Th>
                                         <Th>City</Th>
                                         <Th>Zip Code</Th>
-                                        <Th>Actions</Th>
+                                        <Th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></Th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -370,8 +367,8 @@ const PickUpLocations = () => {
                                             <Td>{location.city}</Td>
                                             <Td>{location.zipCode}</Td>
                                             <Td>
-                                                <FaEdit onClick={() => handleUpdateClick(location)} style={{ cursor: 'pointer', marginRight: '8px' }} />
-                                                <FaTrash onClick={() => openModal(location.pickUpLocationID)} style={{ cursor: 'pointer' }} />
+                                                <Button onClick={() => handleUpdateClick(location)}>Update</Button>
+                                                <Button onClick={() => openModal(location.pickUpLocationID)}>Delete</Button>
                                             </Td>
                                         </Tr>
                                     ))}
@@ -393,6 +390,7 @@ const PickUpLocations = () => {
 
                     {isUpdating && (
                         <AddLocation>
+                            <Button onClick={toggleTable}>Go Back</Button>
                             <h2>Update Location</h2>
                             <form onSubmit={handleUpdateLocation}>
                                 <label>
@@ -418,6 +416,7 @@ const PickUpLocations = () => {
 
                     {showForm && (
                         <AddLocation>
+                            <Button onClick={toggleTable}>Go Back</Button>
                             <h2>Add New Location</h2>
                             <form onSubmit={handleSubmit}>
                                 <label>

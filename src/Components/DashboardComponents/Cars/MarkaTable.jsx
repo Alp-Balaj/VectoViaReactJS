@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Modal } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const Box = styled.div`
     position: absolute;
@@ -217,10 +218,6 @@ const MarkaTable = () => {
                     </Buttons>
                 </Box>
             </Modal>
-            <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Marka' : 'Show Marka'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Marka' : 'Add Marka'}</Button>
-            </Buttons>
             {showTable && (
                 <div>
                     {error && <div>Error: {error}</div>}
@@ -230,15 +227,15 @@ const MarkaTable = () => {
                             <tr>
                                 <th>MarkaID</th>
                                 <th>Emri i Markes</th>
-                                <th>Actions</th>
+                                <th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></th>
                             </tr>
                         </thead>
                         <tbody>
                             {markaList.map(marka => (
-                                <tr key={marka.id}>
+                                <tr key={marka.markaId}>
                                     <td>{marka.markaId}</td>
                                     <td>{marka.emriMarkes}</td>
-                                    <td style={{display: 'flex', justifyContent: 'center'}}>
+                                    <td>
                                         <Button onClick={() => handleUpdateClick(marka)}>Update</Button>
                                         <Button onClick={() => youSure(marka.markaId)}>Delete</Button>
                                     </td>
@@ -251,6 +248,7 @@ const MarkaTable = () => {
 
             {isUpdating && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Update Marka</h2>
                     <form onSubmit={handleUpdateMarka}>
                         <label>
@@ -264,6 +262,7 @@ const MarkaTable = () => {
 
             {showForm && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Add New Marka</h2>
                     <form onSubmit={handleSubmit}>
                         <label>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import AddIcon from '@mui/icons-material/Add';
 import Modal from 'react-modal';
 import Select from 'react-select'; 
 
@@ -251,6 +251,7 @@ const KompaniaRent = () => {
 
     const toggleTable = () => {
         setShowTable(!showTable);
+        setIsEditMode(false)
         setShowForm(false);
     };
 
@@ -304,13 +305,9 @@ const KompaniaRent = () => {
     return (        
         <Layout>
             <MainContent>
-                <Buttons>
-                    <Button onClick={toggleTable}>{showTable ? 'Hide Kompania Rents' : 'Show KompaniaRents'}</Button>
-                    <Button onClick={toggleForm}>{showForm ? 'Hide Kompania Rent Form' : 'Add Kompania Rent'}</Button>
-                </Buttons>
-
                 {showForm && (
                     <AddRent>
+                        <Button onClick={toggleTable}>Go Back</Button>
                         <h2>{isEditMode ? 'Edit Kompania Rent' : 'Add New Kompania Rent'}</h2>
                         <form onSubmit={handleSubmit}>
                             <label>
@@ -364,7 +361,7 @@ const KompaniaRent = () => {
                                     <Th>Contact Info</Th>
                                     <Th>Insurance</Th>
                                     <Th>PickUp Location</Th>
-                                    <Th>Actions</Th>
+                                    <Th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></Th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -378,8 +375,8 @@ const KompaniaRent = () => {
                                     <Td>{rent.sigurimi}</Td>
                                     <Td>{rent.pickUpLocations?.map(loc => `${loc.locationName}, ${loc.city}`).join(' || ')}</Td>
                                     <Td>
-                                        <FaEdit onClick={() => openEditForm(rent)} style={{ cursor: 'pointer', marginRight: '8px' }} />
-                                        <FaTrash onClick={() => openModal(rent.companyID)} style={{ cursor: 'pointer' }} />
+                                        <Button onClick={() => openEditForm(rent)}>Update</Button>
+                                        <Button onClick={() => openModal(rent.companyID)}>Delete</Button>
                                     </Td>
                                 </Tr>
                             ))}

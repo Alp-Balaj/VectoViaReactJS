@@ -11384,8 +11384,9 @@ section#contact form#contactForm :-ms-input-placeholder {
   background-image: url("../../Assets/Images/bg-Rent.avif");
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   background-repeat: no-repeat;
-  min-height: 700px; /* Adjust the height as needed */
+  min-height: 700px;
   display: flex;
   justify-content: center;
   align-items: center;

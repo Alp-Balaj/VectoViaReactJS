@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Modal } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+
 
 const Box = styled.div`
     position: absolute;
@@ -214,10 +216,6 @@ const QytetiTable = () => {
                     </Buttons>
                 </Box>
             </Modal>
-            <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Qyteti' : 'Show Qyteti'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Qyteti' : 'Add Qyteti'}</Button>
-            </Buttons>
             {showTable && (
                 <div>
                     {error && <div>Error: {error}</div>}
@@ -227,7 +225,7 @@ const QytetiTable = () => {
                             <tr>
                                 <th>QytetiID</th>
                                 <th>Emri i Qytetit</th>
-                                <th>Actions</th>
+                                <th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -235,7 +233,7 @@ const QytetiTable = () => {
                                 <tr key={qyteti.qytetiId}>
                                     <td>{qyteti.qytetiId}</td>
                                     <td>{qyteti.name}</td>
-                                    <td style={{display: 'flex', justifyContent: 'center'}}>
+                                    <td>
                                         <Button onClick={() => handleUpdateClick(qyteti)}>Update</Button>
                                         <Button onClick={() => youSure(qyteti.qytetiId)}>Delete</Button>
                                     </td>
@@ -248,6 +246,7 @@ const QytetiTable = () => {
 
             {isUpdating && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Update Qyteti</h2>
                     <form onSubmit={handleUpdateRole}>
                         <label>
@@ -261,6 +260,7 @@ const QytetiTable = () => {
 
             {showForm && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Add New Qyteti</h2>
                     <form onSubmit={handleSubmit}>
                         <label>
