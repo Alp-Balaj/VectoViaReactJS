@@ -165,7 +165,7 @@ const KompaniaRent = () => {
     const [pickUpLocations, setPickUpLocations] = useState([]);
     const [kompaniaRents, setKompaniaRents] = useState([]);
     const [showForm, setShowForm] = useState(false);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [formData, setFormData] = useState({
         kompania: '',
         companyLogoUrl: '',
@@ -189,19 +189,20 @@ const KompaniaRent = () => {
                 console.error('Error fetching pick-up locations:', error);
             }
         };
-
+        const fetchKompaniaRents = async () => {
+            try {
+                const response = await axios.get("https://localhost:7081/api/KompaniaRent/get-kompaniteRent");
+                setKompaniaRents(response.data);
+            } catch (error) {
+                console.error('Error fetching kompania rents:', error);
+                setError(error.message || 'Error fetching kompania rents');
+            }
+        };
+        fetchKompaniaRents();
         fetchPickUpLocations();
     }, []);
 
-    const fetchKompaniaRents = async () => {
-        try {
-            const response = await axios.get("https://localhost:7081/api/KompaniaRent/get-kompaniteRent");
-            setKompaniaRents(response.data);
-        } catch (error) {
-            console.error('Error fetching kompania rents:', error);
-            setError(error.message || 'Error fetching kompania rents');
-        }
-    };
+    
 
     const handleChange = (selectedOptions) => {
         setFormData(prevState => ({
@@ -218,9 +219,14 @@ const KompaniaRent = () => {
             if (isEditMode) {
                 await axios.put(`https://localhost:7081/api/KompaniaRent/update-KompaniaRent-by-id/${selectedRecord.companyID}`, formData);
                 console.log('Kompania Rent updated successfully.');
+                const response = await axios.get("https://localhost:7081/api/KompaniaRent/get-kompaniteRent");
+                console.log('Kompania Rent added successfully.');
+                setKompaniaRents(response.data);
             } else {
                 await axios.post("https://localhost:7081/api/KompaniaRent/add-KompaniaRent", formData);
+                const response = await axios.get("https://localhost:7081/api/KompaniaRent/get-kompaniteRent");
                 console.log('Kompania Rent added successfully.');
+                setKompaniaRents(response.data);
             }
             setFormData({
                 kompania: '',
@@ -230,7 +236,6 @@ const KompaniaRent = () => {
                 sigurimi: '',
                 pickUpLocationIDs: []
             });
-            fetchKompaniaRents(); 
             setShowForm(false);
             setShowTable(true);
             setIsEditMode(false);
@@ -245,7 +250,6 @@ const KompaniaRent = () => {
     };
 
     const toggleTable = () => {
-        if (!showTable) fetchKompaniaRents();
         setShowTable(!showTable);
         setShowForm(false);
     };
@@ -270,8 +274,10 @@ const KompaniaRent = () => {
             const response = await axios.delete(`https://localhost:7081/api/KompaniaRent/delete-kompaniaRent-by-id/${deleteKompaniaRentID}`);
             console.log('Delete response:', response.data);
 
-
-            fetchKompaniaRents();
+            const refreshKomp = await axios.get("https://localhost:7081/api/KompaniaRent/get-kompaniteRent");
+            setKompaniaRents(refreshKomp.data);
+            const refreshLok = await axios.get("https://localhost:7081/api/PickUpLocation/get-pickUpLocation");
+            setPickUpLocations(refreshLok.data);
            
             closeModal();
         } catch (error) {
@@ -299,8 +305,8 @@ const KompaniaRent = () => {
         <Layout>
             <MainContent>
                 <Buttons>
-                    <Button onClick={toggleForm}>{showForm ? 'Hide Kompania Rent Form' : 'Add Kompania Rent'}</Button>
                     <Button onClick={toggleTable}>{showTable ? 'Hide Kompania Rents' : 'Show KompaniaRents'}</Button>
+                    <Button onClick={toggleForm}>{showForm ? 'Hide Kompania Rent Form' : 'Add Kompania Rent'}</Button>
                 </Buttons>
 
                 {showForm && (
@@ -362,7 +368,7 @@ const KompaniaRent = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                            {kompaniaRents.map((rent, index) => (
+                            {kompaniaRents.map((rent) => (
                                 <Tr key={rent.companyID}>
                                     <Td>{rent.companyID}</Td>
                                     <Td>{rent.kompania}</Td>

@@ -210,7 +210,7 @@ const ConfirmationModal = ({ isOpen, onRequestClose, onConfirm }) => (
 const PickUpLocations = () => {
     const [locations, setLocations] = useState([]);
     const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({

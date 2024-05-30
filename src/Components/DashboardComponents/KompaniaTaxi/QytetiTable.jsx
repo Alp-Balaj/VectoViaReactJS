@@ -93,7 +93,7 @@ const QytetiTable = () => {
 
     const [qytetet, setQytetet] = useState([]);
     const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         name: ''
