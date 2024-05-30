@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Modal } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const Box = styled.div`
     position: absolute;
@@ -95,10 +96,10 @@ const CarsTable = () => {
     const [cars, setCars] = useState([]);
     const [marka, setMarka] = useState([]);
     const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
-        markaID: '',
+        markaId: '',
         modeli: '',
         karburanti: '',
         transmisioni: '',
@@ -147,9 +148,9 @@ const CarsTable = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: name === "markaID" ? parseInt(value, 10) : value
+        setFormData(prev => ({
+            ...prev,
+            [name]: name === "markaId" ? parseInt(value, 10) : value
         }));
     };
 
@@ -167,7 +168,7 @@ const CarsTable = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form Data:', formData);
-        console.log('marka', marka);
+        console.log('Marka:', marka);
         try {
             await axios.post("https://localhost:7081/api/Car/add-Car", formData);
             // Fetch users again after adding a new user
@@ -175,7 +176,7 @@ const CarsTable = () => {
             setCars(response.data);
             // Clear form data after successful submission
             setFormData({
-                markaID: '',
+                markaId: '',
                 modeli: '',
                 karburanti: '',
                 transmisioni: '',
@@ -208,7 +209,7 @@ const CarsTable = () => {
         const { name, value } = e.target;
         setCurrentCar(prev => ({
             ...prev,
-            [name]: name === "markaID" ? parseInt(value, 10) : value
+            [name]: name === "markaId" ? parseInt(value, 10) : value
         }));
     };
 
@@ -249,10 +250,6 @@ const CarsTable = () => {
                     </Buttons>
                 </Box>
             </Modal>
-            <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Cars' : 'Show Cars'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Cars' : 'Add Cars'}</Button>
-            </Buttons>
             {showTable && (
                 <>
                     {error && <div>Error: {error}</div>}
@@ -266,7 +263,7 @@ const CarsTable = () => {
                                 <th>Karburanti</th>
                                 <th>Transmisioni</th>
                                 <th>Viti i Prodhimit</th>
-                                <th>Actions</th>
+                                <th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -291,11 +288,12 @@ const CarsTable = () => {
 
             {isUpdating && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Update Cars</h2>
                     <form onSubmit={handleUpdateCar}>
                         <label>
                             Marka:
-                            <select name="markaID" value={currentCar.markaID} onChange={handleUpdateChange}>
+                            <select name="markaId" value={currentCar.markaId} onChange={handleUpdateChange}>
                                 {marka.map(marka => (
                                     <option key={marka.markaId} value={marka.markaId}>
                                         {marka.emriMarkes}
@@ -326,11 +324,13 @@ const CarsTable = () => {
 
             {showForm && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Add New Car</h2>
                     <form onSubmit={handleSubmit}>
                         <label>
                             Marka:
-                            <select name="markaID" value={formData.markaID} onChange={handleChange}>
+                            <select name="markaId" value={formData.markaId} onChange={handleChange}>
+                                <option value="none"></option>
                                 {marka.map(marka => (
                                     <option key={marka.markaId} value={marka.markaId}>
                                         {marka.emriMarkes}

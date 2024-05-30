@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Modal } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const Box = styled.div`
     position: absolute;
@@ -82,9 +83,18 @@ const FancyTable = styled.table`
     td {
         color: black;
         padding: 15px 10px;
-        transition: background-color 0.3s;
+        img{
+            width: 150px;
+            height: 150px;
+        }
     } 
 `;
+
+const CBox = styled.div`
+    width: 25px;
+    height: 25px;
+    border: 1px solid black;
+`
 
 const KompaniaTaxiTable = () => {
     const [open, setOpen] = useState(false);
@@ -93,11 +103,13 @@ const KompaniaTaxiTable = () => {
     const [companies, setCompanies] = useState([]);
     const [qytetet, setQytetet] = useState([]);
     const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         kompania: '',
-        location: '',
+        imageUrl: '',
+        primaryColour: '',
+        secondaryColour: '',
         contactInfo: '',
         sigurimi: '',
         qyteti: ''
@@ -124,10 +136,7 @@ const KompaniaTaxiTable = () => {
             try {
                 const response = await axios.get("https://localhost:7081/api/KompaniaTaxis/get-kompaniteTaxi");
                 const companiesWithQyteti = await Promise.all(response.data.map(async company => {
-                    // console.log("TI QI MOTRAT",company.qytetiId);
-                    
                     const qytetiResponse = await axios.get(`https://localhost:7081/api/Qyteti/get-qyteti-id/${company.qytetiId}`);
-                    // console.log('Qyteti response:', qytetiResponse.data);
                     return { ...company, qytetiName: qytetiResponse.data.name };
                 }));
                 setCompanies(companiesWithQyteti);
@@ -169,7 +178,9 @@ const KompaniaTaxiTable = () => {
             setCompanies(response.data);
             setFormData({
                 kompania: '',
-                location: '',
+                imageUrl: '',
+                primaryColour: '',
+                secondaryColour: '',
                 contactInfo: '',
                 sigurimi: '',
                 qyteti: ''
@@ -231,6 +242,23 @@ const KompaniaTaxiTable = () => {
         }
     };
 
+    const handleOnChangePm = (color) => {
+        handleUpdateChange({ target: { name: 'primaryColour', value: color.hex } });
+    };
+
+    const handleOnChangeSc = (color) => {
+        handleUpdateChange({ target: { name: 'secondaryColour', value: color.hex } });
+    };
+
+    const handleChangePm = (color) => {
+        handleChange({ target: { name: 'primaryColour', value: color.hex } });
+    };
+
+    const handleChangeSc = (color) => {
+        handleChange({ target: { name: 'secondaryColour', value: color.hex } });
+    };
+    
+
     return (
         <Root>
             <Modal open={open} onClose={() => setOpen(false)}>
@@ -243,10 +271,6 @@ const KompaniaTaxiTable = () => {
                     </Buttons>
                 </Box>
             </Modal>
-            <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Companies' : 'Show Companies'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Companies' : 'Add Companies'}</Button>
-            </Buttons>
             {showTable && (
                 <>
                     {error && <div>Error: {error}</div>}
@@ -255,20 +279,24 @@ const KompaniaTaxiTable = () => {
                         <thead>
                             <tr>
                                 <th>Company ID</th>
+                                <th>Company Image</th>
                                 <th>Company Name</th>
-                                <th>Location</th>
+                                <th>Primary Colour</th>
+                                <th>Secondary Colour</th>
                                 <th>Contact Info</th>
                                 <th>Insurance</th>
                                 <th>Qyteti</th>
-                                <th>Actions</th>
+                                <th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></th>
                             </tr>
                         </thead>
                         <tbody>
                             {companies.map(company => (
                                 <tr key={company.companyID}>
                                     <td>{company.companyID}</td>
+                                    <td><img src={company.imageUrl} alt="" /></td>
                                     <td>{company.kompania}</td>
-                                    <td>{company.location}</td>
+                                    <td><CBox style={{backgroundColor: company.primaryColour}}/>{company.primaryColour}</td>
+                                    <td><CBox style={{backgroundColor: company.secondaryColour}}/>{company.primaryColour}</td>
                                     <td>{company.contactInfo}</td>
                                     <td>{company.sigurimi}</td>
                                     <td>{company.qytetiName}</td>
@@ -285,6 +313,7 @@ const KompaniaTaxiTable = () => {
 
             {isUpdating && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Update Company</h2>
                     <form onSubmit={handleUpdateCompany}>
                         <label>
@@ -292,8 +321,16 @@ const KompaniaTaxiTable = () => {
                             <input type="text" name="kompania" value={currentCompany.kompania} onChange={handleUpdateChange} />
                         </label>
                         <label>
-                            Location:
-                            <input type="text" name="location" value={currentCompany.location} onChange={handleUpdateChange} />
+                            Company Image:
+                            <input type="text" name="imageUrl" value={currentCompany.imageUrl} onChange={handleUpdateChange} />
+                        </label>
+                        <label style={{display:'flex',flexDirection:'row'}}>
+                            Primary Colour:
+                            <input type="color" id="color" name="primaryColour" value={currentCompany.primaryColour} onChange={(e) => handleOnChangePm({ hex: e.target.value })}/>
+                        </label>
+                        <label style={{display:'flex',flexDirection:'row'}}>
+                            Secondary Colour:
+                            <input type="color" id="color" name="secondaryColour" value={currentCompany.secondaryColour} onChange={(e) => handleOnChangeSc({ hex: e.target.value })}/>
                         </label>
                         <label>
                             Contact Info:
@@ -320,15 +357,24 @@ const KompaniaTaxiTable = () => {
 
             {showForm && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Add New Company</h2>
                     <form onSubmit={handleSubmit}>
                         <label>
-                            Kompania:
+                            Company Name:
                             <input type="text" name="kompania" value={formData.kompania} onChange={handleChange} />
                         </label>
                         <label>
-                            Location:
-                            <input type="text" name="location" value={formData.location} onChange={handleChange} />
+                            Company Image:
+                            <input type="text" name="imageUrl" value={formData.imageUrl} onChange={handleChange} />
+                        </label>
+                        <label style={{display:'flex',flexDirection:'row'}}>
+                            Primary Colour:
+                            <input type="color" id="color" name="primaryColour" value={formData.primaryColour} onChange={(e) => handleChangePm({ hex: e.target.value })}/>
+                        </label>
+                        <label style={{display:'flex',flexDirection:'row'}}>
+                            Secondary Colour:
+                            <input type="color" id="color" name="secondaryColour" value={formData.secondaryColour} onChange={(e) => handleChangeSc({ hex: e.target.value })}/>
                         </label>
                         <label>
                             Contact Info:
@@ -341,6 +387,7 @@ const KompaniaTaxiTable = () => {
                         <label>
                             Qyteti:
                             <select name="qytetiId" value={formData.qyteti} onChange={handleChange}>
+                                <option value="none"></option>
                                 {qytetet.map(qyteti => (
                                     <option key={qyteti.qytetiId} value={qyteti.qytetiId}>
                                         {qyteti.name}

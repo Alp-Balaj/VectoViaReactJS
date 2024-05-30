@@ -45,11 +45,12 @@ const SideNav = styled.div`
       button{
             border: none;
             border-radius: 10px;
-            padding: 0px 10px;
+            padding: 5px 15px;
             background-color: #ffc800;
-            color: #fff;
+            color: black;
             transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-            font-weight: 5  00;
+            font-size: 15px;
+            font-weight: 700;
         }
         button:hover{
             background-color: #d9aa00;
@@ -83,7 +84,7 @@ export default function TemporaryDrawer() {
 
   const DrawerList = (
     <Box sx={{ width: 250, backgroundColor: '#000', height:'100vh' }} role="presentation" onClick={toggleDrawer(false)}>
-      {/* <h1 style={{color: '#FFC800', textAlign: 'center'}}>VectoVia</h1> */}
+      <h1 style={{color: '#FFC800', textAlign: 'center'}}>VectoVia</h1>
       <SideNav>
         <ul>
           <li><Link to="/">Home</Link></li>
@@ -91,6 +92,7 @@ export default function TemporaryDrawer() {
           <li><Link to="/rent">Rent Car</Link></li>
           <li><Link to="/about">About</Link></li>
           <li><Link to="/contact">Contact</Link></li>
+          <li><Link to="/dashboard">Dashboard</Link></li>
           {localStorage.getItem("token") ? (
               <li><Button onClick={() => {
                   localStorage.removeItem("token");

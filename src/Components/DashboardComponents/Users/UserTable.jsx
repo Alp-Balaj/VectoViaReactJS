@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Modal } from '@mui/material';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import AddIcon from '@mui/icons-material/Add';
+
 
 const Box = styled.div`
     position: absolute;
@@ -81,11 +84,23 @@ const FancyTable = styled.table`
         padding: 15px;
         td{
             color: black;
-            padding: 15px 10px; /* Increased vertical padding and kept horizontal padding */
-            transition: background-color 0.3s; /* Add transition effect */
+            padding: 15px 10px;
         } 
     }
 `;
+
+const AddButton = styled.div`
+    width: 25px;
+    height: 25px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:  15px;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #909397;
+`
 
 
 const UserTable = () => {
@@ -95,7 +110,7 @@ const UserTable = () => {
     const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]);
     const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         emri: '',
@@ -250,10 +265,6 @@ const UserTable = () => {
                     </Buttons>
                 </Box>
             </Modal>
-            <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Users' : 'Show Users'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Users' : 'Add Users'}</Button>
-            </Buttons>
             {showTable && (
                 <>
                     {error && <div>Error: {error}</div>}
@@ -268,7 +279,7 @@ const UserTable = () => {
                                 <th>Email</th>
                                 <th>Password</th>
                                 <th>Role</th>
-                                <th>Actions</th>
+                                <th style={{display:"flex",justifyContent:"space-between"}}>Actions<AddIcon style={{ cursor: 'pointer' }} onClick={toggleForm}/></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -294,6 +305,7 @@ const UserTable = () => {
 
             {isUpdating && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Update User</h2>
                     <form onSubmit={handleUpdateUser}>
                         <label>
@@ -333,6 +345,7 @@ const UserTable = () => {
 
             {showForm && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Add New User</h2>
                     <form onSubmit={handleSubmit}>
                         <label>

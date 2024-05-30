@@ -9,8 +9,8 @@ import { useState } from 'react';
 import logo from '../Assets/logos/SiteLogo.jpg';
 import MarkaTable from '../Components/DashboardComponents/Cars/MarkaTable';
 import CarsTable from '../Components/DashboardComponents/Cars/CarsTable';
-// import KompaniaRent from '../Components/DashboardComponents/KompaniaRent';
-// import PickUpLocation from '../Components/DashboardComponents/PickUpLocation';
+ import KompaniaRent from '../Components/DashboardComponents/KompaniaRent';
+ import PickUpLocation from '../Components/DashboardComponents/PickUpLocation';
 
 const Dash = styled.div`
     display: flex;
@@ -83,7 +83,8 @@ const Dashboard = () => {
     if (activeTable === table) {
       setActiveTable(null);
     } else {
-      setActiveTable(table); 
+      setActiveTable(table);
+
     }
   };
 
@@ -139,18 +140,21 @@ const Dashboard = () => {
                       </Under>
                     )}
                 </li>
-                {/* <li>
+                { <li>
                     <a onClick={handleLocationLinkClick}>Kompania Rent</a>
                     {showLocationButton && (
                       <Under>
                         <ul>
+                            <li><a className='underNeath' onClick={() => toggleTable('kompaniaRent')}>
+                              {activeTable === 'kompaniaRent' ? 'Hide RentCompanies Table' : 'Show RentCompanies Table'}
+                            </a></li>
                             <li><a className='underNeath' onClick={() => toggleTable('location')}>
                               {activeTable === 'location' ? 'Hide PickUp Location Table' : 'Show PickUp Location Table'}
                             </a></li>
                         </ul>
                       </Under>
                     )}
-                </li> */}
+                </li> }
                 <li>
                     <a onClick={handleCarsLinkClick}>Cars</a>
                     {showCarButtons && (
@@ -173,8 +177,8 @@ const Dashboard = () => {
             <Window>
                 {activeTable === 'role' && <RoleTable />}
                 {activeTable === 'user' && <UserTable />}
-                {/* {activeTable === 'location' && <PickUpLocation />}
-                {activeTable === 'kompaniaRent' && <KompaniaRent />} */}
+                {activeTable === 'location' && <PickUpLocation />}
+                {activeTable === 'kompaniaRent' && <KompaniaRent />} 
                 {activeTable === 'kompTaxi' && <KompaniaTaxiTable />}
                 {activeTable === 'qyteti' && <QytetiTable />}
                 {activeTable === 'cars' && <CarsTable />}

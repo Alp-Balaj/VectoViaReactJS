@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import AddIcon from '@mui/icons-material/Add';
 import Modal from 'react-modal';
 
 
@@ -210,7 +210,7 @@ const ConfirmationModal = ({ isOpen, onRequestClose, onConfirm }) => (
 const PickUpLocations = () => {
     const [locations, setLocations] = useState([]);
     const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
@@ -227,6 +227,7 @@ const PickUpLocations = () => {
 
     const handleUpdateClick = (location) => {
         setIsUpdating(true);
+        setShowTable(false);
         setCurrentLocation(location);
     };
 
@@ -245,7 +246,7 @@ const PickUpLocations = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:5108/api/PickUpLocation/get-pickUpLocation");
+                const response = await axios.get("https://localhost:7081/api/PickUpLocation/get-pickUpLocation");
                 setLocations(response.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -269,8 +270,8 @@ const PickUpLocations = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5108/api/PickUpLocation/add-PickUpLocation", formData);
-            const response = await axios.get("http://localhost:5108/api/PickUpLocation/get-pickUpLocation");
+            await axios.post("https://localhost:7081/api/PickUpLocation/add-PickUpLocation", formData);
+            const response = await axios.get("https://localhost:7081/api/PickUpLocation/get-pickUpLocation");
             setLocations(response.data);
             setFormData({
                 locationName: '',
@@ -288,7 +289,7 @@ const PickUpLocations = () => {
     const handleUpdateLocation = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:5108/api/PickUpLocation/update-PickUpLocation-by-id/${currentLocation.pickUpLocationID}`, currentLocation);
+            await axios.put(`https://localhost:7081/api/PickUpLocation/update-PickUpLocation-by-id/${currentLocation.pickUpLocationID}`, currentLocation);
             const updatedLocations = locations.map(location => location.pickUpLocationID === currentLocation.pickUpLocationID ? currentLocation : location);
             setLocations(updatedLocations);
             setIsUpdating(false);
@@ -309,6 +310,7 @@ const PickUpLocations = () => {
 
     const toggleTable = () => {
         setShowTable(!showTable);
+        setIsUpdating(false);
         setShowForm(false);
     };
 
@@ -328,7 +330,7 @@ const PickUpLocations = () => {
 
     const handleDeleteLocation = async () => {
         try {
-            await axios.delete(`http://localhost:5108/api/PickUpLocation/delete-PickUpLocation-by-id/${deleteLocationID}`);
+            await axios.delete(`https://localhost:7081/api/PickUpLocation/delete-PickUpLocation-by-id/${deleteLocationID}`);
             setLocations(locations.filter(location => location.pickUpLocationID !== deleteLocationID));
             closeModal();
         } catch (error) {
@@ -341,11 +343,6 @@ const PickUpLocations = () => {
         <Layout>
             <div style={{ width: '80vw' }}>
                 <MainContent>
-                    <Buttons>
-                        <Button onClick={toggleTable}>{showTable ? 'Hide PickUp Locations' : 'Show PickUp Locations'}</Button>
-                        <Button onClick={toggleForm}>{showForm ? 'Hide  PickUpLocation' : 'Add PickUp Location'}</Button>
-                    </Buttons>
-
                     {showTable && (
                         <TableContainer>
                             {error && <div>Error: {error}</div>}
@@ -358,7 +355,7 @@ const PickUpLocations = () => {
                                         <Th>Address</Th>
                                         <Th>City</Th>
                                         <Th>Zip Code</Th>
-                                        <Th>Actions</Th>
+                                        <Th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></Th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -370,8 +367,8 @@ const PickUpLocations = () => {
                                             <Td>{location.city}</Td>
                                             <Td>{location.zipCode}</Td>
                                             <Td>
-                                                <FaEdit onClick={() => handleUpdateClick(location)} style={{ cursor: 'pointer', marginRight: '8px' }} />
-                                                <FaTrash onClick={() => openModal(location.pickUpLocationID)} style={{ cursor: 'pointer' }} />
+                                                <Button onClick={() => handleUpdateClick(location)}>Update</Button>
+                                                <Button onClick={() => openModal(location.pickUpLocationID)}>Delete</Button>
                                             </Td>
                                         </Tr>
                                     ))}
@@ -386,13 +383,14 @@ const PickUpLocations = () => {
                 <UpdateModal isOpen={isUpdateModalOpen} onRequestClose={closeUpdateModal}>
                     <h2>Update Location</h2>
                     <UpdateForm onSubmit={handleUpdateLocation}>
-                        {/* Render your update form inputs here */}
+                        
                     </UpdateForm>
                 </UpdateModal>
             )}
 
                     {isUpdating && (
                         <AddLocation>
+                            <Button onClick={toggleTable}>Go Back</Button>
                             <h2>Update Location</h2>
                             <form onSubmit={handleUpdateLocation}>
                                 <label>
@@ -418,6 +416,7 @@ const PickUpLocations = () => {
 
                     {showForm && (
                         <AddLocation>
+                            <Button onClick={toggleTable}>Go Back</Button>
                             <h2>Add New Location</h2>
                             <form onSubmit={handleSubmit}>
                                 <label>
