@@ -11437,78 +11437,7 @@ section#contact form#contactForm :-ms-input-placeholder {
   padding: 40px;
 }
 
-/* Individual company card styling */
-.company-card {
-  background: #fff;
-  border: 2px solid #ff4d4d;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  color: #333;
-  padding: 30px;
-  width: 45%;
-  margin: 20px;
-  transition: transform 0.3s ease-in-out;
-  font-family: 'Arial', sans-serif;
-  position: relative;
-}
 
-.company-card:hover {
-  transform: scale(1.05);
-  background: #ff4d4d;
-  color: #fff;
-}
-
-.company-logo2 {
-  border: 2px solid #ff4d4d;
-  border-radius: 15px;
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  margin-bottom: 20px;
-  transition: border 0.3s ease-in-out;
-}
-
-.company-card:hover .company-logo2 {
-  border: 2px solid #fff;
-}
-
-.company-card h2 {
-  font-size: 2rem;
-  margin-bottom: 15px;
-  transition: color 0.3s ease-in-out;
-}
-
-.company-card:hover h2 {
-  color: #fff;
-}
-
-.company-card p {
-  margin: 10px 0;
-  font-size: 1.2rem;
-  transition: color 0.3s ease-in-out;
-}
-
-.company-card:hover p {
-  color: #fff;
-}
-
-.company-card button {
-  background-color: #ff4d4d;
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  padding: 10px 20px;
-  margin-top: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  font-size: 1rem;
-}
-
-.company-card button:hover {
-  background-color: #fff;
-  color: #ff4d4d;
-  border: 2px solid #ff4d4d;
-}
 
 .rac{
   margin-top: 25px;
@@ -11520,3 +11449,19 @@ section#contact form#contactForm :-ms-input-placeholder {
   letter-spacing: 2px; 
   
 }
+
+
+.car-image {
+  width: 100px;
+  height: auto;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.car-image:hover {
+  transform: scale(1.05);
+}
+

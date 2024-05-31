@@ -1,30 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { Modal } from '@mui/material';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import Modal from 'react-modal';
 
-const Box = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
+const Layout = styled.div`
+    display: flex;
+`;
+
+const MainContent = styled.div`
+    width: 100%;
+    height: calc(100vh - 90px);
     padding: 20px;
-    z-index: 1000;
-`
-
-const Root = styled.div`
-    background-color: white;
-    height: 100%;
+    background-color: #f8f9fa;
+    color: #343a40;
     overflow-y: auto;
 `;
 
-const AddUsers = styled.div`
+const ModalContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    margin: auto;
+`;
+
+const AddCar = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     color: #343a40;
+    h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #2c3036;
+    }
     form {
         display: flex;
         flex-direction: column;
@@ -34,14 +51,69 @@ const AddUsers = styled.div`
         label {
             display: flex;
             flex-direction: column;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            color: #2c3036;
+            input, select {
+                padding: 10px;
+                border: 1px solid #ced4da;
+                border-radius: 5px;
+                outline: none;
+                transition: border-color 0.3s;
+                &:focus {
+                    border-color: #ffc107;
+                }
+            }
         }
-        button {
+        button[type="submit"] {
+            background-color: #ffc107;
+            color: #343a40;
+            border: none;
+            padding: 12px 25px;
             margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            &:hover {
+                background-color: #ffca2b;
+            }
         }
     }
 `;
 
+const TableContainer = styled.div`
+    text-align: center;
+`;
+
+const FancyTable = styled.table`
+    margin: auto;
+    border-collapse: collapse;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+`;
+
+const Th = styled.th`
+    background-color: #2c3036; 
+    color: #ffc107; 
+    padding: 15px; 
+`;
+
+const Td = styled.td`
+    padding: 15px 10px;
+    transition: background-color 0.3s;
+`;
+
+const Tr = styled.tr`
+    &:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+`;
+
+const Buttons = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 
 const Button = styled.button`
     background-color: #2c3036;
@@ -62,305 +134,280 @@ const Button = styled.button`
     align-items: center;
 `;
 
-const Buttons = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const FancyTable = styled.table`
-    overflow-y: auto;
-    margin: auto;
-    border-collapse: collapse;
-    width: 80%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    th{
-        background-color: #2c3036; 
-        color: #ffc107; 
-        padding: 15px;
-        td{
-            color: black;
-            padding: 15px 10px; /* Increased vertical padding and kept horizontal padding */
-            transition: background-color 0.3s; /* Add transition effect */
-        } 
-    }
-`;
-
+const ConfirmationModal = ({ isOpen, onRequestClose, onConfirm }) => (
+    <Modal isOpen={isOpen} onRequestClose={onRequestClose} ariaHideApp={false} style={{
+        content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            borderRadius: '10px',
+            padding: '20px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        },
+        overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        },
+    }}>
+        <ModalContent>
+            <h2>Are you sure you want to delete this Car?</h2>
+            <div>
+                <Button onClick={() => { onConfirm(); onRequestClose(); }}>Yes</Button>
+                <Button onClick={onRequestClose}>No</Button>
+            </div>
+        </ModalContent>
+    </Modal>
+);
 
 const CarsTable = () => {
-    const [open, setOpen] = useState(false);
-    const [deleteCarsID, setDeleteCarID] = useState(null);
-
     const [cars, setCars] = useState([]);
-    const [marka, setMarka] = useState([]);
-    const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [markas, setMarkas] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const [showTable, setShowTable] = useState(false);
     const [formData, setFormData] = useState({
         markaID: '',
         modeli: '',
         karburanti: '',
         transmisioni: '',
-        vitiProdhimit: ''
+        vitiProdhimit: '',
+        carUrl: ''
     });
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [currentCar, setCurrentCar] = useState(null);
-    
-    
-    const handleUpdateClick = async (car) => {
-        setIsUpdating(true);
-        setCurrentCar(car);
-        setShowTable(false);
-        setShowForm(false); // Show the form for updating
-        try {
-            const MarkaResponse = await axios.get("https://localhost:7081/api/Marka/get-Marka");
-            setMarka(MarkaResponse.data);
-            console.log(MarkaResponse.data);
-        } catch (error) {
-            console.error('Failed to fetch Markas:', error);
-        }
-    };
-
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [selectedCar, setSelectedCar] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [deleteCarID, setDeleteCarID] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchMarkas = async () => {
             try {
-                const response = await axios.get("https://localhost:7081/api/Car/get-Cars");
-                const CarsWithMarka = await Promise.all(response.data.map(async car => {
-                    const markaResponse = await axios.get(`https://localhost:7081/api/Marka/get-Marka-id/${car.markaID}`);
-                    console.log(markaResponse.data);
-                    return { ...car, markaName: markaResponse.data.emriMarkes };
-                }));
-                setCars(CarsWithMarka);
+                const response = await axios.get("https://localhost:7081/api/Marka/get-Marka");
+                setMarkas(response.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
-                setError(error.message || 'Error fetching data');
+                console.error('Error fetching markas:', error);
             }
         };
 
-        if (showTable) {
-            fetchData();
-        }
-    }, [showTable]);
+        fetchMarkas();
+    }, []);
 
+    const fetchCars = async () => {
+        try {
+            const response = await axios.get("https://localhost:7081/api/Car/get-Cars");
+            const carsWithMarka = await Promise.all(response.data.map(async (car) => {
+                const markaResponse = await axios.get(`https://localhost:7081/api/Marka/get-Marka-id/${car.markaID}`);
+                return { ...car, markaName: markaResponse.data.emriMarkes };
+            }));
+            setCars(carsWithMarka);
+        } catch (error) {
+            console.error('Error fetching cars:', error);
+            setError(error.message || 'Error fetching cars');
+        }
+    };
+
+    const handleSelectChange = (e) => {
+        const value = e.target.value;
+        console.log('Selected value:', value); 
+        const parsedValue = parseInt(value, 10);
+        console.log('Parsed markaID:', parsedValue); 
+        setFormData(prevState => ({
+            ...prevState,
+            markaID: isNaN(parsedValue) ? '' : parsedValue
+        }));
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
             ...prevState,
-            [name]: name === "markaID" ? parseInt(value, 10) : value
+            [name]: value
         }));
-    };
-
-    const deleteCar = async () => {
-        try {
-            await axios.delete(`https://localhost:7081/api/Car/delete-Car-by-id/${deleteCarsID}`);
-            setCars(cars.filter(car => car.targat !== deleteCarsID));
-            setOpen(false);
-        } catch (error) {
-            console.error('Error deleting Car:', error);
-            setError(error.message || 'Error deleting Cars');
-        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form Data:', formData);
-        console.log('marka', marka);
+        const payload = { ...formData };
+
+       
+        if (!payload.companyID) {
+            delete payload.companyID;
+        }
+
+        console.log('Request Payload:', payload); 
         try {
-            await axios.post("https://localhost:7081/api/Car/add-Car", formData);
-            // Fetch users again after adding a new user
-            const response = await axios.get("https://localhost:7081/api/Car/get-Cars");
-            setCars(response.data);
-            // Clear form data after successful submission
+            if (isEditMode) {
+                await axios.put(`https://localhost:7081/api/Car/update-Car-by-id/${selectedCar.tabelat}`, payload);
+                console.log('Car updated successfully.');
+            } else {
+                await axios.post("https://localhost:7081/api/Car/add-Car", payload);
+                console.log('Car added successfully.');
+            }
             setFormData({
                 markaID: '',
                 modeli: '',
                 karburanti: '',
                 transmisioni: '',
-                vitiProdhimit: ''
+                vitiProdhimit: '',
+                carUrl: ''
             });
+            fetchCars();
             setShowForm(false);
             setShowTable(true);
+            setIsEditMode(false);
         } catch (error) {
-            console.error('Error adding car:', error);
-            setError(error.message || 'Error adding Car');
+            console.error('Error saving car:', error);
         }
     };
 
-    const handleUpdateCar = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.put(`https://localhost:7081/api/Car/update-Car-by-id/${currentCar.tabelat}`, currentCar);
-            const updatedCars = cars.map(car => car.tabelat === currentCar.tabelat ? currentCar : car);
-            setCars(updatedCars);
-            setIsUpdating(false);
-            setCurrentCar(null);
-            setShowTable(true);
-        } catch (error) {
-            console.error('Error updating car:', error);
-            setError(error.message || 'Error updating car');
-        }
-    };
-
-    const handleUpdateChange = (e) => {
-        const { name, value } = e.target;
-        setCurrentCar(prev => ({
-            ...prev,
-            [name]: name === "markaID" ? parseInt(value, 10) : value
-        }));
+    const toggleForm = () => {
+        setShowForm(!showForm);
+        setShowTable(false);
     };
 
     const toggleTable = () => {
+        if (!showTable) fetchCars();
         setShowTable(!showTable);
-        setIsUpdating(false);
-        setShowForm(false); // Hide the form when showing the table
+        setShowForm(false);
     };
 
-    const youSure = (carID) => {
-        setOpen(true);
-        setDeleteCarID(carID);
+    const openModal = (id) => {
+        setDeleteCarID(id);
+        setIsModalOpen(true);
     };
 
-    const toggleForm = async () => {
-    setShowTable(false); // Hide the table when showing the form
-    setShowForm(!showForm);
-    setIsUpdating(false);
-    if (!showForm) { // Fetch roles only if the form is about to be shown
-        try {
-            const MarkaResponse = await axios.get("https://localhost:7081/api/Marka/get-Marka");
-            setMarka(MarkaResponse.data);
-            console.log(MarkaResponse.data);
-        } catch (error) {
-            console.error('Failed to fetch marka:', error);
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleDeleteCar = async () => {
+        if (!deleteCarID) {
+            console.error('No Car ID to delete');
+            return;
         }
-    }
-};
+
+        try {
+            console.log('Deleting Car with ID:', deleteCarID);
+            const response = await axios.delete(`https://localhost:7081/api/Car/delete-Car-by-id/${deleteCarID}`);
+            console.log('Delete response:', response.data);
+            fetchCars();
+            closeModal();
+        } catch (error) {
+            console.error('Error deleting car:', error.response ? error.response.data : error.message);
+            setError(error.message || 'Error deleting car');
+        }
+    };
+
+    const openEditForm = (car) => {
+        setIsEditMode(true);
+        setSelectedCar(car);
+        setFormData({
+            markaID: car.markaID,
+            modeli: car.modeli,
+            karburanti: car.karburanti,
+            transmisioni: car.transmisioni,
+            vitiProdhimit: car.vitiProdhimit,
+            carUrl: car.carUrl
+        });
+        setShowForm(true);
+        setShowTable(false);
+    };
+
     return (
-        <Root>
-            <Modal open={open} onClose={()=>setOpen(false)}>
-                <Box>
-                    <h2>Are you sure you want to <span style={{color: 'red'}}>delete</span> this user?</h2>
-                    <p>This action cannot be undone.</p>
-                    <Buttons>
-                        <Button onClick={()=>setOpen(false)}>Cancel</Button>
-                        <Button onClick={deleteCar}>Delete</Button>
-                    </Buttons>
-                </Box>
-            </Modal>
-            <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Cars' : 'Show Cars'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Cars' : 'Add Cars'}</Button>
-            </Buttons>
-            {showTable && (
-                <>
-                    {error && <div>Error: {error}</div>}
-                    <h2 style={{textAlign: 'center'}}>Car List</h2>
-                    <FancyTable>
-                        <thead>
-                            <tr>
-                                <th>Tabelat</th>
-                                <th>Marka</th>
-                                <th>Modeli</th>
-                                <th>Karburanti</th>
-                                <th>Transmisioni</th>
-                                <th>Viti i Prodhimit</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {cars.map(car => (
-                                <tr key={car.tabelat}>
-                                    <td>{car.tabelat}</td>
-                                    <td>{car.markaName}</td>
-                                    <td>{car.modeli}</td>
-                                    <td>{car.karburanti}</td>
-                                    <td>{car.transmisioni}</td>
-                                    <td>{car.vitiProdhimit}</td>
-                                    <td>
-                                        <Button onClick={() => handleUpdateClick(car)}>Update</Button>
-                                        <Button onClick={() => youSure(car.tabelat)}>Delete</Button>
-                                    </td>
+        <Layout>
+            <MainContent>
+                <Buttons>
+                    <Button onClick={toggleForm}>{showForm ? 'Hide Car Form' : 'Add Car'}</Button>
+                    <Button onClick={toggleTable}>{showTable ? 'Hide Cars' : 'Show Cars'}</Button>
+                </Buttons>
+
+                {showForm && (
+                    <AddCar>
+                        <h2>{isEditMode ? 'Edit Car' : 'Add New Car'}</h2>
+                        <form onSubmit={handleSubmit}>
+                            <label>
+                                Marka:
+                                <select name="markaID" value={formData.markaId} onChange={handleSelectChange}>
+    <option value="">Select Marka</option>
+    {markas.map(marka => (
+        <option key={marka.markaId} value={marka.markaId}>
+            {marka.emriMarkes}
+        </option>
+    ))}
+</select>
+                            </label>
+                            <label>
+                                Model:
+                                <input type="text" name="modeli" value={formData.modeli} onChange={handleChange} />
+                            </label>
+                            <label>
+                                Fuel:
+                                <input type="text" name="karburanti" value={formData.karburanti} onChange={handleChange} />
+                            </label>
+                            <label>
+                                Transmission:
+                                <input type="text" name="transmisioni" value={formData.transmisioni} onChange={handleChange} />
+                            </label>
+                            <label>
+                                Year:
+                                <input type="number" name="vitiProdhimit" value={formData.vitiProdhimit} onChange={handleChange} />
+                            </label>
+                            <label>
+                                Car URL:
+                                <input type="text" name="carUrl" value={formData.carUrl} onChange={handleChange} />
+                            </label>
+                            <button type="submit">{isEditMode ? 'Update Car' : 'Add Car'}</button>
+                        </form>
+                    </AddCar>
+                )}
+
+                {showTable && (
+                    <TableContainer>
+                        {error && <div>Error: {error}</div>}
+                        <h2>Car List</h2>
+                        <FancyTable>
+                            <thead>
+                                <tr>
+                                    <Th>ID</Th>
+                                    <Th>Marka</Th>
+                                    <Th>Model</Th>
+                                    <Th>Fuel</Th>
+                                    <Th>Transmission</Th>
+                                    <Th>Year</Th>
+                                    <Th>Car URL</Th>
+                                    <Th>Actions</Th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </FancyTable>
-                </>
-            )}
-
-            {isUpdating && (
-                <AddUsers>
-                    <h2>Update Cars</h2>
-                    <form onSubmit={handleUpdateCar}>
-                        <label>
-                            Marka:
-                            <select name="markaID" value={currentCar.markaID} onChange={handleUpdateChange}>
-                                {marka.map(marka => (
-                                    <option key={marka.markaId} value={marka.markaId}>
-                                        {marka.emriMarkes}
-                                    </option>
+                            </thead>
+                            <tbody>
+                                {cars.map((car, index) => (
+                                    <Tr key={car.tabelat}>
+                                        <Td>{car.tabelat}</Td>
+                                        <Td>{car.markaName}</Td>
+                                        <Td>{car.modeli}</Td>
+                                        <Td>{car.karburanti}</Td>
+                                        <Td>{car.transmisioni}</Td>
+                                        <Td>{car.vitiProdhimit}</Td>
+                                        <Td><img src={car.carUrl} alt="Car" className="car-image" style={{ width: '100px', height: 'auto' }} /></Td>
+                                        <Td>
+                                            <FaEdit onClick={() => openEditForm(car)} style={{ cursor: 'pointer', marginRight: '8px' }} />
+                                            <FaTrash onClick={() => openModal(car.tabelat)} style={{ cursor: 'pointer' }} />
+                                        </Td>
+                                    </Tr>
                                 ))}
-                            </select>
-                        </label>
-                        <label>
-                            Modeli:
-                            <input type="text" name="modeli" value={currentCar.modeli} onChange={handleUpdateChange} />
-                        </label>
-                        <label>
-                            Karburanti:
-                            <input type="text" name="karburanti" value={currentCar.karburanti} onChange={handleUpdateChange} />
-                        </label>
-                        <label>
-                            Transmisioni:
-                            <input type="text" name="transmisioni" value={currentCar.transmisioni} onChange={handleUpdateChange} />
-                        </label>
-                        <label>
-                            Viti i Prodhimit:
-                            <input type="text" name="vitiProdhimit" value={currentCar.vitiProdhimit} onChange={handleUpdateChange} />
-                        </label>
-                        <Button type="submit">Update Car</Button>
-                    </form>
-                </AddUsers>
-            )}
+                            </tbody>
+                        </FancyTable>
+                    </TableContainer>
+                )}
 
-            {showForm && (
-                <AddUsers>
-                    <h2>Add New Car</h2>
-                    <form onSubmit={handleSubmit}>
-                        <label>
-                            Marka:
-                            <select name="markaID" value={formData.markaID} onChange={handleChange}>
-                                {marka.map(marka => (
-                                    <option key={marka.markaId} value={marka.markaId}>
-                                        {marka.emriMarkes}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                        <label>
-                            Modeli:
-                            <input type="text" name="modeli" value={formData.modeli} onChange={handleChange} />
-                        </label>
-                        <label>
-                            Karburanti:
-                            <input type="text" name="karburanti" value={formData.karburanti} onChange={handleChange} />
-                        </label>
-                        <label>
-                            Transmisioni:
-                            <input type="text" name="transmisioni" value={formData.transmisioni} onChange={handleChange} />
-                        </label>
-                        <label>
-                            Viti i Prodhimit:
-                            <input type="int" name="vitiProdhimit" value={formData.vitiProdhimit} onChange={handleChange} />
-                        </label>
-                        <Button type="submit">Add Car</Button>
-                    </form>
-                </AddUsers>
-            )}
-        </Root>
+                <ConfirmationModal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    onConfirm={handleDeleteCar}
+                />
+            </MainContent>
+        </Layout>
     );
 };
 
 export default CarsTable;
-

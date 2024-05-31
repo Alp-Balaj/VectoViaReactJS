@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import "../../Pages/Style/styles.css";
 import { Link } from 'react-router-dom';
 import AOS from 'aos';
