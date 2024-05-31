@@ -83,7 +83,8 @@ const Dashboard = () => {
     if (activeTable === table) {
       setActiveTable(null);
     } else {
-      setActiveTable(table); 
+      setActiveTable(table);
+
     }
   };
 
@@ -98,8 +99,6 @@ const Dashboard = () => {
   const handleKompaniaTaxiLinkClick = () => {
     setShowKompaniaTaxiButtons(!showKompaniaTaxiButtons); 
   };
-
-
 
   const handleCarsLinkClick = () => {
     setShowCarButtons(!showCarButtons); 
@@ -146,11 +145,11 @@ const Dashboard = () => {
                     {showLocationButton && (
                       <Under>
                         <ul>
-                            <li><a className='underNeath' onClick={() => toggleTable('location')}>
-                              {activeTable === 'location' ? 'Hide PickUp Location Table' : 'Show PickUp Location Table'}
-                            </a></li>
                             <li><a className='underNeath' onClick={() => toggleTable('kompaniaRent')}>
                               {activeTable === 'kompaniaRent' ? 'Hide RentCompanies Table' : 'Show RentCompanies Table'}
+                            </a></li>
+                            <li><a className='underNeath' onClick={() => toggleTable('location')}>
+                              {activeTable === 'location' ? 'Hide PickUp Location Table' : 'Show PickUp Location Table'}
                             </a></li>
                         </ul>
                       </Under>
@@ -178,7 +177,7 @@ const Dashboard = () => {
             <Window>
                 {activeTable === 'role' && <RoleTable />}
                 {activeTable === 'user' && <UserTable />}
-                 {activeTable === 'location' && <PickUpLocation />}
+                {activeTable === 'location' && <PickUpLocation />}
                 {activeTable === 'kompaniaRent' && <KompaniaRent />} 
                 {activeTable === 'kompTaxi' && <KompaniaTaxiTable />}
                 {activeTable === 'qyteti' && <QytetiTable />}

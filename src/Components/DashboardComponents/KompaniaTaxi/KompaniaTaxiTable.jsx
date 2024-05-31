@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Modal } from '@mui/material';
-import { ChromePicker  } from 'react-color';
+import AddIcon from '@mui/icons-material/Add';
 
 const Box = styled.div`
     position: absolute;
@@ -83,7 +83,6 @@ const FancyTable = styled.table`
     td {
         color: black;
         padding: 15px 10px;
-        transition: background-color 0.3s;
         img{
             width: 150px;
             height: 150px;
@@ -104,7 +103,7 @@ const KompaniaTaxiTable = () => {
     const [companies, setCompanies] = useState([]);
     const [qytetet, setQytetet] = useState([]);
     const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         kompania: '',
@@ -272,10 +271,6 @@ const KompaniaTaxiTable = () => {
                     </Buttons>
                 </Box>
             </Modal>
-            <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Companies' : 'Show Companies'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Companies' : 'Add Companies'}</Button>
-            </Buttons>
             {showTable && (
                 <>
                     {error && <div>Error: {error}</div>}
@@ -291,7 +286,7 @@ const KompaniaTaxiTable = () => {
                                 <th>Contact Info</th>
                                 <th>Insurance</th>
                                 <th>Qyteti</th>
-                                <th>Actions</th>
+                                <th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -318,6 +313,7 @@ const KompaniaTaxiTable = () => {
 
             {isUpdating && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Update Company</h2>
                     <form onSubmit={handleUpdateCompany}>
                         <label>
@@ -361,6 +357,7 @@ const KompaniaTaxiTable = () => {
 
             {showForm && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Add New Company</h2>
                     <form onSubmit={handleSubmit}>
                         <label>
@@ -390,6 +387,7 @@ const KompaniaTaxiTable = () => {
                         <label>
                             Qyteti:
                             <select name="qytetiId" value={formData.qyteti} onChange={handleChange}>
+                                <option value="none"></option>
                                 {qytetet.map(qyteti => (
                                     <option key={qyteti.qytetiId} value={qyteti.qytetiId}>
                                         {qyteti.name}

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Modal } from '@mui/material';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import AddIcon from '@mui/icons-material/Add';
 
 const Box = styled.div`
     position: absolute;
@@ -81,8 +83,7 @@ const FancyTable = styled.table`
         padding: 15px;
         td{
             color: black;
-            padding: 15px 10px; /* Increased vertical padding and kept horizontal padding */
-            transition: background-color 0.3s; /* Add transition effect */
+            padding: 25px 10px;
         } 
     }
 `;
@@ -93,7 +94,7 @@ const RoleTable = () => {
     
     const [roles, setRoles] = useState([]);
     const [error, setError] = useState(null);
-    const [showTable, setShowTable] = useState(false);
+    const [showTable, setShowTable] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         roleID: '',
@@ -216,10 +217,7 @@ const RoleTable = () => {
                     </Buttons>
                 </Box>
             </Modal>
-            <Buttons>
-                <Button onClick={toggleTable}>{showTable ? 'Hide Roles' : 'Show Roles'}</Button>
-                <Button onClick={toggleForm}>{showForm ? 'Hide Add Roles' : 'Add Roles'}</Button>
-            </Buttons>
+
             {showTable && (
                 <div>
                     {error && <div>Error: {error}</div>}
@@ -229,12 +227,12 @@ const RoleTable = () => {
                             <tr>
                                 <th>RoleID</th>
                                 <th>Lloji i Rolit</th>
-                                <th>Actions</th>
+                                <th>Actions<AddIcon style={{marginLeft: '15px', cursor: 'pointer'}} onClick={toggleForm}/></th>
                             </tr>
                         </thead>
                         <tbody>
                             {roles.map(role => (
-                                <tr key={role.id}>
+                                <tr key={role.roleID}>
                                     <td>{role.roleID}</td>
                                     <td>{role.llojiIRolit}</td>
                                     <td style={{display: 'flex', justifyContent: 'center'}}>
@@ -250,6 +248,7 @@ const RoleTable = () => {
 
             {isUpdating && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Update Role</h2>
                     <form onSubmit={handleUpdateRole}>
                         <label>
@@ -267,6 +266,7 @@ const RoleTable = () => {
 
             {showForm && (
                 <AddUsers>
+                    <Button onClick={toggleTable}>Go Back</Button>
                     <h2>Add New Role</h2>
                     <form onSubmit={handleSubmit}>
                         <label>

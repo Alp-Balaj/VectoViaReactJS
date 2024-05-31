@@ -1,5 +1,5 @@
 import {React, useEffect, useState} from "react";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Modal, Box } from '@mui/material';
 import styled from "styled-components";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -94,6 +94,17 @@ const Card = styled.div`
   }
 `;
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  p: 4,  
+};
+
 const Button = styled.div`
   display: flex;
   align-items: center;
@@ -125,8 +136,19 @@ const H3 = styled.div`
 
 const CallTaxi = () => {
 
+  const [open, setOpen] = useState(false);
   const [error, setError] = useState(null);
   const [companies, setCompanies] = useState([]);
+  const [currentCompany, setCurrentCompany] = useState('');
+
+  const handleOpen = (company) => {
+    setOpen(true);
+    setCurrentCompany(company);
+  }
+  const handleClose = () => {
+    setOpen(false);
+    setCurrentCompany('');
+  }
 
   useEffect(() => {
       AOS.init();
@@ -187,7 +209,7 @@ const CallTaxi = () => {
                           </div>
                         </div>
                         <div className="buttonPlacement">
-                          <Button style={{backgroundColor:`${company.primaryColour}`}}>Call Now!</Button>
+                          <Button onClick={() => handleOpen(company)} style={{backgroundColor:`${company.primaryColour}`}}>Call Now!</Button>
                         </div>
                       </div>
                   </div>
@@ -197,6 +219,18 @@ const CallTaxi = () => {
           </Grid>
         </Grid>
       </Container>
+
+      <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={style} style={{boxShadow:`0px 0px 25px 15px ${currentCompany.secondaryColour}`}}>
+          <h1 style={{color: currentCompany.primaryColour}}>{currentCompany.kompania}</h1>
+          <p>Call us at: 044-199-827</p>
+        </Box>
+      </Modal>
     </Calls>
   );
 };

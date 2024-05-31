@@ -167,7 +167,7 @@ const CarsTable = () => {
     const [showForm, setShowForm] = useState(false);
     const [showTable, setShowTable] = useState(false);
     const [formData, setFormData] = useState({
-        markaID: '',
+        markaId: '',
         modeli: '',
         karburanti: '',
         transmisioni: '',
@@ -245,7 +245,7 @@ const CarsTable = () => {
                 console.log('Car added successfully.');
             }
             setFormData({
-                markaID: '',
+                markaId: '',
                 modeli: '',
                 karburanti: '',
                 transmisioni: '',
