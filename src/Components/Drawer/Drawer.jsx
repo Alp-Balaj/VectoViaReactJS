@@ -8,7 +8,7 @@ import { AppStateProvider } from '../Context/AppStateProvider';
 import Login from '../Header/Login';
 import SignUp from '../Header/SignUp';
 import { useState } from 'react';
-
+import { jwtDecode } from 'jwt-decode';
 
 
 const switcher = {
@@ -64,6 +64,21 @@ export default function TemporaryDrawer() {
   const [openModal, setOpenModal] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
 
+  const token = localStorage.getItem('token');
+    let isAuthenticated = false;
+
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        
+        if (decodedToken.role === "Admin") {
+          isAuthenticated = true; 
+        }
+      } catch (error) {
+        isAuthenticated = false; 
+      }
+    }
+
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
 
@@ -92,7 +107,7 @@ export default function TemporaryDrawer() {
           <li><Link to="/rent">Rent Car</Link></li>
           <li><Link to="/about">About</Link></li>
           <li><Link to="/contact">Contact</Link></li>
-          <li><Link to="/dashboard">Dashboard</Link></li>
+          {isAuthenticated?(<li><Link to="/dashboard">Dashboard</Link></li>):("")}
           {localStorage.getItem("token") ? (
               <li><Button onClick={() => {
                   localStorage.removeItem("token");

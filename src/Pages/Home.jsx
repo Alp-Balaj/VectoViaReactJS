@@ -7,9 +7,12 @@ import MyFooter from '../Components/Footer/index';
 import Sponsors from '../Components/HomeComponents/Sponsors';
 import Contact from '../Components/HomeComponents/Contact';
 import Header from '../Components/Header';
-
+import { useEffect } from 'react';
 
 const Home = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [Home]);
     return (
   <div>
     <Header/>

@@ -7,6 +7,7 @@ import { Container, Modal, Box, Button } from '@mui/material';
 import Login from './Login';
 import { AppStateProvider } from '../Context/AppStateProvider';
 import SignUp from './SignUp';
+import {jwtDecode} from 'jwt-decode';
 
 const Head = styled.div`
     position: fixed;
@@ -88,13 +89,16 @@ const switcher = {
     color: '#ffc800',
 }
 
-const Header = () => {
+const Header = () => {    
+    
     const [scrolled, setScrolled] = useState(false);
     const [open, setOpen] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    
 
     useEffect(() => {
         const handleScroll = () => {

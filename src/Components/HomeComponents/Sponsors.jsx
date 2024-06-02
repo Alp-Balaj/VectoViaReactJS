@@ -26,7 +26,7 @@ const Sponsors = () => {
   return (
     <div>
       <div className="text-center">
-        <h2 data-aos="zoom-out"
+        <h2 data-aos="fade-up"
           style={{
             fontSize: "2.5rem",
             marginTop: "50px",
@@ -36,7 +36,7 @@ const Sponsors = () => {
         >
           Want to learn more?
         </h2>
-        <H3 data-aos="zoom-out">
+        <H3 data-aos="fade-up">
           Visit us at our official social medias
         </H3>
       </div>
