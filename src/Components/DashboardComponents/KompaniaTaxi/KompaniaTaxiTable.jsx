@@ -111,6 +111,7 @@ const KompaniaTaxiTable = () => {
         primaryColour: '',
         secondaryColour: '',
         contactInfo: '',
+        numriKontaktues: '',
         sigurimi: '',
         qyteti: ''
     });
@@ -182,6 +183,7 @@ const KompaniaTaxiTable = () => {
                 primaryColour: '',
                 secondaryColour: '',
                 contactInfo: '',
+                numriKontaktues: '',
                 sigurimi: '',
                 qyteti: ''
             });
@@ -284,6 +286,7 @@ const KompaniaTaxiTable = () => {
                                 <th>Primary Colour</th>
                                 <th>Secondary Colour</th>
                                 <th>Contact Info</th>
+                                <th>Phone Number</th>
                                 <th>Insurance</th>
                                 <th>Qyteti</th>
                                 <th>Actions<AddIcon style={{ cursor: 'pointer'}} onClick={toggleForm}/></th>
@@ -298,6 +301,7 @@ const KompaniaTaxiTable = () => {
                                     <td><CBox style={{backgroundColor: company.primaryColour}}/>{company.primaryColour}</td>
                                     <td><CBox style={{backgroundColor: company.secondaryColour}}/>{company.primaryColour}</td>
                                     <td>{company.contactInfo}</td>
+                                    <td>{company.numriKontaktues}</td>
                                     <td>{company.sigurimi}</td>
                                     <td>{company.qytetiName}</td>
                                     <td>
@@ -335,6 +339,10 @@ const KompaniaTaxiTable = () => {
                         <label>
                             Contact Info:
                             <input type="text" name="contactInfo" value={currentCompany.contactInfo} onChange={handleUpdateChange} />
+                        </label>
+                        <label>
+                            Phone Number:
+                            <input type="text" name="numriKontaktues" value={currentCompany.numriKontaktues} onChange={handleUpdateChange} />
                         </label>
                         <label>
                             Sigurimi:
@@ -379,6 +387,10 @@ const KompaniaTaxiTable = () => {
                         <label>
                             Contact Info:
                             <input type="text" name="contactInfo" value={formData.contactInfo} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Phone Number:
+                            <input type="text" name="numriKontaktues" value={formData.numriKontaktues} onChange={handleChange} />
                         </label>
                         <label>
                             Sigurimi:

@@ -132,6 +132,26 @@ const H3 = styled.div`
   --bs-text-opacity: 1;
   color: #6c757d !important;
 `
+const Call = styled.div`
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75px;
+  font-size: 16px;
+  border-radius: 5px;
+  a{
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+    border-radius: 5px;
+  }
+  a:hover{
+    box-shadow: 0px 0px 20px 6px #00000054;
+  }
+`;
 
 
 const CallTaxi = () => {
@@ -226,9 +246,12 @@ const CallTaxi = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
       >
-        <Box sx={style} style={{boxShadow:`0px 0px 25px 15px ${currentCompany.secondaryColour}`}}>
+        <Box sx={style} style={{boxShadow:`0px 0px 25px 15px ${currentCompany.secondaryColour}`, display: "flex", alignItems: "center", flexDirection: "column"}}>
           <h1 style={{color: currentCompany.primaryColour}}>{currentCompany.kompania}</h1>
-          <p>Call us at: 044-199-827</p>
+          <p> <span style={{fontWeight: 700}}>Sigurimi: </span>{currentCompany.sigurimi}</p>
+          <p> <span style={{fontWeight: 700}}>Qyteti: </span>{currentCompany.qytetiName}</p>
+          <p> <span style={{fontWeight: 700}}>Numri Tel: </span>{currentCompany.numriKontaktues}</p>
+          <Call style={{backgroundColor:`${currentCompany.primaryColour}`}}><a href={`tel:${currentCompany.numriKontaktues}`}>Call!</a></Call>
         </Box>
       </Modal>
     </Calls>
