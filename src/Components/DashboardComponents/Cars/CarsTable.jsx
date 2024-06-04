@@ -214,7 +214,7 @@ const CarsTable = () => {
         console.log('Parsed markaID:', parsedValue); 
         setFormData(prevState => ({
             ...prevState,
-            markaID: isNaN(parsedValue) ? '' : parsedValue
+            markaId: isNaN(parsedValue) ? '' : parsedValue
         }));
     };
 
@@ -328,14 +328,14 @@ const CarsTable = () => {
                         <form onSubmit={handleSubmit}>
                             <label>
                                 Marka:
-                                <select name="markaID" value={formData.markaId} onChange={handleSelectChange}>
-    <option value="">Select Marka</option>
-    {markas.map(marka => (
-        <option key={marka.markaId} value={marka.markaId}>
-            {marka.emriMarkes}
-        </option>
-    ))}
-</select>
+                                <select name="markaId" value={formData.markaId} onChange={handleSelectChange}>
+                                    <option value="">Select Marka</option>
+                                    {markas.map(marka => (
+                                        <option key={marka.markaId} value={marka.markaId}>
+                                            {marka.emriMarkes}
+                                        </option>
+                                    ))}
+                                </select>
                             </label>
                             <label>
                                 Model:

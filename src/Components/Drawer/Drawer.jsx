@@ -107,7 +107,7 @@ export default function TemporaryDrawer() {
           <li><Link to="/rent">Rent Car</Link></li>
           <li><Link to="/about">About</Link></li>
           <li><Link to="/contact">Contact</Link></li>
-          {isAuthenticated?(<li><Link to="/dashboard">Dashboard</Link></li>):("")}
+          {isAuthenticated?(<li><Link to="/dashboard">Dashboard</Link></li>):("")}  
           {localStorage.getItem("token") ? (
               <li><Button onClick={() => {
                   localStorage.removeItem("token");

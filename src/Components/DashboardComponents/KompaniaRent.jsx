@@ -186,6 +186,7 @@ const ConfirmationModal = ({ isOpen, onRequestClose, onConfirm }) => (
 );
 
 const KompaniaRent = () => {
+  const [qytetet, setQytetet] = useState([]);
   const [pickUpLocations, setPickUpLocations] = useState([]);
   const [kompaniaRents, setKompaniaRents] = useState([]);
   const [availableCars, setAvailableCars] = useState([]); // New state for available cars
@@ -194,7 +195,7 @@ const KompaniaRent = () => {
   const [formData, setFormData] = useState({
     kompania: "",
     companyLogoUrl: "",
-    qyteti: "",
+    qytetiId: "",
     contactInfo: "",
     sigurimi: "",
     pickUpLocationIDs: [],
@@ -226,12 +227,13 @@ const KompaniaRent = () => {
         const response = await axios.get(
           "https://localhost:7081/api/PickUpLocation/get-pickUpLocation"
         );
+        const qytetiRes = await axios.get("https://localhost:7081/api/Qyteti/get-qyteti");
+        setQytetet(qytetiRes.data);
         setPickUpLocations(response.data);
       } catch (error) {
         console.error("Error fetching pick-up locations:", error);
       }
     };
-
     fetchPickUpLocations();
     fetchAvailableCars();
   }, []);
@@ -247,6 +249,11 @@ const KompaniaRent = () => {
             return { ...rent, cars: carsWithMarka };
         }));
         setKompaniaRents(kompaniaRentsWithMarka);
+        const kompaniaRentsWithQyteti = await Promise.all(response.data.map(async rent => {
+          const qytetiResponse = await axios.get(`https://localhost:7081/api/Qyteti/get-qyteti-id/${rent.qytetiId}`);
+          return { ...rent, qytetiName: qytetiResponse.data.name };
+        }));
+        setKompaniaRents(kompaniaRentsWithQyteti)
     } catch (error) {
         console.error('Error fetching kompania rents:', error);
         setError(error.message || 'Error fetching kompania rents');
@@ -260,13 +267,24 @@ const KompaniaRent = () => {
     }));
   };
 
+  const handleSelectChange = (e) => {
+    const value = e.target.value;
+    console.log('Selected value:', value); 
+    const parsedValue = parseInt(value, 10);
+    console.log('Parsed qytetiId:', parsedValue); 
+    setFormData(prevState => ({
+        ...prevState,
+        qytetiId: isNaN(parsedValue) ? '' : parsedValue
+    }));
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = {
         kompania: formData.kompania,
         companyLogoUrl: formData.companyLogoUrl,
-        qyteti: formData.qyteti,
+        qytetiId: formData.qytetiId,
         contactInfo: formData.contactInfo,
         sigurimi: formData.sigurimi,
         pickUpLocationIDs: formData.pickUpLocationIDs,
@@ -290,7 +308,7 @@ const KompaniaRent = () => {
       setFormData({
         kompania: "",
         companyLogoUrl: "",
-        qyteti: "",
+        qytetiId: "",
         contactInfo: "",
         sigurimi: "",
         pickUpLocationIDs: [],
@@ -315,7 +333,7 @@ const KompaniaRent = () => {
       setFormData({
         kompania: "",
         companyLogoUrl: "",
-        qyteti: "",
+        qytetiId: "",
         contactInfo: "",
         sigurimi: "",
         pickUpLocationIDs: [],
@@ -375,7 +393,7 @@ const KompaniaRent = () => {
     setFormData({
         kompania: record.kompania,
         companyLogoUrl: record.companyLogoUrl,
-        qyteti: record.qyteti,
+        qytetiId: record.qytetiId,
         contactInfo: record.contactInfo,
         sigurimi: record.sigurimi,
         pickUpLocationIDs: record.pickUpLocations.map(loc => loc.pickUpLocationID),
@@ -449,15 +467,15 @@ const KompaniaRent = () => {
                 />
               </label>
               <label>
-                City:
-                <input
-                  type="text"
-                  name="qyteti"
-                  value={formData.qyteti}
-                  onChange={(e) =>
-                    setFormData({ ...formData, qyteti: e.target.value })
-                  }
-                />
+                  Qyteti:
+                  <select name="qytetiId" value={formData.qyteti} onChange={handleSelectChange}>
+                      <option value="none"></option>
+                      {qytetet.map(qyteti => (
+                          <option key={qyteti.qytetiId} value={qyteti.qytetiId}>
+                              {qyteti.name}
+                          </option>
+                      ))}
+                  </select>
               </label>
               <label>
                 Contact Info:
@@ -576,7 +594,7 @@ const KompaniaRent = () => {
                         className="company-logo"
                         style={{ width: "100px", height: "auto" }}
                       />
-                      <Td>{rent.qyteti}</Td>
+                      <Td>{rent.qytetiName}</Td>
                       <Td>{rent.contactInfo}</Td>
                       <Td>{rent.sigurimi}</Td>
                       <Td>
