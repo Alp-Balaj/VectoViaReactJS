@@ -3,6 +3,11 @@ import "../../Pages/Style/styles.css";
 import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import styled from 'styled-components';
+
+const Body = styled.div`
+  overflow: hidden;
+`
 
 const Hero = () => {
   
@@ -11,7 +16,7 @@ const Hero = () => {
   }, [])
 
   return (
-    <div>
+    <Body>
         <header className="mastheadTaxi">
           <div className="heroFix container">
               <div data-aos="fade-up" className="mastheadTaxi-subheading">Want to order a Taxi?</div>
@@ -19,7 +24,7 @@ const Hero = () => {
               <Link data-aos="fade-up" data-aos-duration="1000" className="btn btn-primary btn-xl text-uppercase" to='/rent'>Rent A Car!</Link>
           </div>
         </header>
-    </div>
+    </Body>
   )
 }
 

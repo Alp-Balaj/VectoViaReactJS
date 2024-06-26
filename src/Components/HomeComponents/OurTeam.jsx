@@ -27,8 +27,8 @@ const OurTeam = () => {
       <section className="page-section bg-light" id="team">
         <div className="container">
           <div className="text-center">
-            <h2 data-aos="zoom-out" className="section-heading text-uppercase">Our Amazing Team</h2>
-            <h3 data-aos="zoom-out" className="section-subheading text-muted">
+            <h2 data-aos="fade-up" className="section-heading text-uppercase">Our Amazing Team</h2>
+            <h3 data-aos="fade-up" className="section-subheading text-muted">
               Lorem ipsum dolor sit amet consectetur.
             </h3>
           </div>

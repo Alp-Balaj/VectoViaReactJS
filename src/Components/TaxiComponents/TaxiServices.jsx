@@ -12,6 +12,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
   
 const TaxiServ = styled.div`
+  overflow: hidden;
   background-color: #ebe8e8;
   padding-top: 150px;
   padding-bottom: 150px;

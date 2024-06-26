@@ -9,6 +9,7 @@ const Calls = styled.div`
   background-color: #fff;
   padding-top: 150px;
   padding-bottom: 150px;
+  overflow: hidden;
 `;
 
 const Card = styled.div`

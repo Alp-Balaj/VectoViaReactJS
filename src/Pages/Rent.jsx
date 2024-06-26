@@ -13,8 +13,7 @@ const Rent = () => {
       <div>
         <Header/>
         <Hero/>
-            <h2 className='rac'>All Rent Companies</h2>
-         <ListCompanies />
+        <ListCompanies />
         <Footer/>
       </div>
     )

@@ -7,6 +7,8 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  padding-top: 150px;
+  padding-bottom: 150px;
 `;
 
 const FilterForm = styled.div`
@@ -140,6 +142,16 @@ const SearchForm = styled.div`
   margin-bottom: 20px;
 `;
 
+const H3 = styled.div`
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+  font-family: "Roboto Slab", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  margin-bottom: 4rem;
+  --bs-text-opacity: 1;
+  color: #6c757d !important;
+`
+
 const RentCarCompanies = () => {
   const [companies, setCompanies] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
@@ -217,6 +229,16 @@ const RentCarCompanies = () => {
 
   return (
     <Container>
+      <div className="container">
+        <div className="text-center">
+          <h2 data-aos="fade-up" className="section-heading text-uppercase">
+            All our Rent companies!
+          </h2>
+          <H3 data-aos="fade-up">
+            Best cars in town.
+          </H3>
+        </div>
+      </div>
       <FilterForm>
         <Input
           type="text"

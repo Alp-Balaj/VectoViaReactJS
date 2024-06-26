@@ -10953,6 +10953,33 @@ header.mastheadTaxi {
   background-position: bottom bottom;
   background-size: cover;
 }
+header.mastheadCar2 {
+  padding-top: 10.5rem;
+  padding-bottom: 6rem;
+  text-align: center;
+  color: #fff;
+  background-image: url("../../Assets/Images/bg-Rent.avif");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+
+header.mastheadCar2 .mastheadCar2-subheading {
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.5rem;
+  margin-bottom: 25px;
+  font-family: "Roboto Slab", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+header.mastheadCar2 .mastheadCar2-heading {
+  font-size: 3.25rem;
+  font-weight: 700;
+  line-height: 3.25rem;
+  margin-bottom: 2rem;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 header.mastheadTaxi .mastheadTaxi-subheading {
   font-size: 1.5rem;
   font-style: italic;
@@ -11011,6 +11038,22 @@ header.masthead .masthead-heading {
     margin-bottom: 2rem;
   }
   header.mastheadTaxi .mastheadTaxi-heading {
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 4.5rem;
+    margin-bottom: 4rem;
+  }
+  header.mastheadCar2 {
+    padding-top: 17rem;
+    padding-bottom: 12.5rem;
+  }
+  header.mastheadCar2 .mastheadCar2-subheading {
+    font-size: 2.25rem;
+    font-style: italic;
+    line-height: 2.25rem;
+    margin-bottom: 2rem;
+  }
+  header.mastheadCar2 .mastheadCar2-heading {
     font-size: 4.5rem;
     font-weight: 700;
     line-height: 4.5rem;
@@ -11379,39 +11422,6 @@ section#contact form#contactForm :-ms-input-placeholder {
   height: 100%;
 }
 
-
-.mastheadCar2 {
-  background-image: url("../../Assets/Images/bg-Rent.avif");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  min-height: 700px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.mastheadCar2-subheading {
-  color: white; 
-  font-size: 24px; 
-  font-weight: bold; 
-  text-transform: uppercase; 
-  letter-spacing: 2px; 
-  margin-bottom: 20px; 
-  font-family: 'Arial', sans-serif; 
-}
-
-.mastheadCar2-heading {
-  color: white; 
-  font-size: 48px; 
-  font-weight: bold; 
-  text-transform: uppercase; 
-  letter-spacing: 2px; 
-  margin-bottom: 30px; 
-  font-family: 'Playfair Display', serif;
-}
 
 .company-logo {
     width: 100px;

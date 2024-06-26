@@ -89,8 +89,8 @@ const MiniAbout = () => {
       <section className="page-section" id="miniAbout">
         <div className="container">
           <div className="text-center">
-            <h1 data-aos="zoom-out" className="section-heading text-uppercase">Why choose us</h1>
-            <h3 data-aos="zoom-out" className="section-subheading text-muted">
+            <h1 data-aos="fade-up" className="section-heading text-uppercase">Why choose us</h1>
+            <h3 data-aos="fade-up" className="section-subheading text-muted">
               Lorem ipsum dolor sit amet consectetur.
             </h3>
             <Container maxWidth="md">
