@@ -17,6 +17,16 @@ const FilterForm = styled.div`
   align-items: center;
   margin-bottom: 20px;
   gap: 10px;
+  select {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+    &:focus {
+      border-color: #ffc107;
+    }
+  }
 `;
 
 const Input = styled.input`
@@ -153,11 +163,12 @@ const H3 = styled.div`
 `
 
 const RentCarCompanies = () => {
+  const [qytetet, setQytetet] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [filter, setFilter] = useState({
     kompania: '',
-    qyteti: '',
+    qytetiId: '',
   });
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [cars, setCars] = useState([]);
@@ -173,7 +184,13 @@ const RentCarCompanies = () => {
       try {
         const response = await axios.get('https://localhost:7081/api/KompaniaRent/get-kompaniteRent');
         setCompanies(response.data);
-        setFilteredCompanies(response.data); // Initialize filtered companies
+        const qytetiRes = await axios.get("https://localhost:7081/api/Qyteti/get-qyteti");
+        setQytetet(qytetiRes.data);
+        const companiesWithQyteti = await Promise.all(response.data.map(async company => {
+          const qytetiResponse = await axios.get(`https://localhost:7081/api/Qyteti/get-qyteti-id/${company.qytetiId}`);
+          return { ...company, qytetiName: qytetiResponse.data.name };
+      }));
+        setFilteredCompanies(companiesWithQyteti); // Initialize filtered companies
       } catch (error) {
         console.error('Error fetching the companies:', error);
       }
@@ -200,12 +217,15 @@ const RentCarCompanies = () => {
 
   const handleSearch = () => {
     setFilteredCompanies(
-      companies.filter((company) =>
-        company.kompania.toLowerCase().includes(filter.kompania.toLowerCase()) &&
-        company.qyteti.toLowerCase().includes(filter.qyteti.toLowerCase())
-      )
+        companies.filter((company) => {
+            const matchesKompania = company.kompania.toLowerCase().includes(filter.kompania.toLowerCase());
+            const matchesQytetiId = company.qytetiId == filter.qytetiId || filter.qytetiId === 'none';
+        
+            return matchesKompania && matchesQytetiId;
+        })
     );
-  };
+    console.log(filteredCompanies);
+}
 
   const fetchCars = async (companyID) => {
     try {
@@ -247,13 +267,14 @@ const RentCarCompanies = () => {
           value={filter.kompania}
           onChange={handleFilterChange}
         />
-        <Input
-          type="text"
-          name="qyteti"
-          placeholder="City"
-          value={filter.qyteti}
-          onChange={handleFilterChange}
-        />
+        <select name="qytetiId" value={filter.qytetiId} onChange={handleFilterChange}>
+            <option value="none"></option>
+            {qytetet.map(qyteti => (
+                <option key={qyteti.qytetiId} value={qyteti.qytetiId}>
+                    {qyteti.name}
+                </option>
+            ))}
+        </select>
         <Button onClick={handleSearch}>Search</Button>
       </FilterForm>
       <CompanyContainer>
@@ -261,7 +282,7 @@ const RentCarCompanies = () => {
           <CompanyCard key={company.companyID}>
             <h2>{company.kompania}</h2>
             <CompanyLogo src={company.companyLogoUrl} alt={`${company.kompania} logo`} />
-            <p><strong>City:</strong> {company.qyteti}</p>
+            <p><strong>City:</strong> {company.qytetiName}</p>
             <p><strong>Contact Info:</strong> {company.contactInfo}</p>
             <Button style={{ marginBottom: '10px' }} onClick={() => { setSelectedCompany({ company, showCars: false }); }}>
               Show PickUpLocations

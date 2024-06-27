@@ -62,7 +62,7 @@ const Sponsors = () => {
               </a>
             </div>
             <div data-aos="fade-left" data-aos-duration="250" data-aos-easing="ease-in-sine" className="col-md-3 col-sm-6 my-3">
-              <a href="#!">
+              <a href="facebook.com">
                 <img
                   className="img-fluid img-brand d-block mx-auto grayedOut"
                   src={facebook}
